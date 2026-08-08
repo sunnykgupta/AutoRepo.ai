@@ -377,14 +377,14 @@ function mayRunOnPullRequest(job) {
     /github\.event_name\s*==\s*['"](?:push|schedule|workflow_dispatch)['"]/.test(condition));
 }
 
-function permissionErrors(value, label, allowSecurityEventsWrite) {
+function permissionErrors(value, label, allowTrustedSecurityWrites) {
   const permissions = normalizePermissions(value);
   if (!value) return [`${label}: explicit top-level least-privilege permissions are required`];
   if (permissions.scalar) return permissions.scalar === 'read-all' ? [] : [`${label}: permissions scalar must be read-all`];
   const errors = [];
   if (permissions.entries.contents !== 'read') errors.push(`${label}: permissions must set contents: read`);
   for (const [scope, level] of Object.entries(permissions.entries)) {
-    if (level === 'write' && !(allowSecurityEventsWrite && scope === 'security-events')) {
+    if (level === 'write' && !(allowTrustedSecurityWrites && ['id-token', 'security-events'].includes(scope))) {
       errors.push(`${label}: ${scope} permission must not exceed read`);
     } else if (!['read', 'none', 'write'].includes(level)) errors.push(`${label}: ${scope} permission is invalid`);
   }
