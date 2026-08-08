@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "g0": {
+    "record_id": "vorflux-plan:4",
+    "plan_id": 4,
+    "plan_title": "AutoRepo.ai v2 — Agent-Native Production System",
+    "baseline_commit": "d2a79e2",
+    "artifacts": [
+      { "name": "v2-autorepo-ai-summary.md", "kind": "plan_summary", "sha256": "dfb8e8ccd884dd267de4961fa53d289e9ca53ce1702ee01e976e3bbdf8478bce" },
+      { "name": "v2-autorepo-ai.md", "kind": "implementation_plan", "sha256": "0feb3571d4e2476e2440a0f5b0c64690be61fee0bb0e235b20aacef4f18c4918" },
+      { "name": "design-plan.json", "kind": "design_manifest", "sha256": "39f13d971e8df8431a982e3aafddec06e2a340f78e85cda37e5ae889c21d2527" },
+      { "name": "public-docs-technical-editorial.html", "kind": "design_fixture", "sha256": "40bb6524356f35bb6b99e436f20918017a1288c0892bd9a08f045e7cfb7e669b" },
+      { "name": "learning-hub-role-pathways.html", "kind": "design_fixture", "sha256": "64f7fc46f07d364377f33b517c878260d7a61e85eae15e65b618200675ec35fd" },
+      { "name": "work-ledger-coordination-console.html", "kind": "design_fixture", "sha256": "b8eed7dc951fb4367134d1cea473e7dda8a229b802b7d6c22b089a685d5eb4f7" },
+      { "name": "saas-admin-production-overview.html", "kind": "design_fixture", "sha256": "c89e57e42287fe2759049cd20a7d54ff27b3308c5912cb0a74499cb37024f6a4" }
+    ]
+  },
+  "authority_record": {
+    "required_roles": ["O1", "O2", "O3"],
+    "bootstrap_rule": "The same active human principal may hold O1 and O2, but each role must have a distinct record.",
+    "security_exception_rule": "Each approved security exception needs an approver who is a different active human principal from its requester.",
+    "o3_rule": "O3 must remain inactive until managed-resource authority is explicitly established."
+  },
+  "clean_room_attestation": {
+    "policy_version": "autorepo-clean-room-v1",
+    "result": "restricted inventory and public-output scan passed at baseline",
+    "restricted_inventory_digest": "c5fe7b1bb77b54cdfdde3bfee3d2b90cada3a6ee57cc5e67669ed0710602b39c",
+    "restricted_inventory_entry_count": 4,
+    "attestation_id": "autorepo-clean-room-attestation-v1",
+    "attestation_status": "scan_attested",
+    "evidence_status": "references_recorded"
+  },
+  "community_security_state": {
+    "allowed_statuses": ["not_configured", "active"]
+  },
+  "settings_evidence": {
+    "required_sections": ["desired", "live", "comparison"],
+    "allowed_setting_statuses": ["matched", "deferred", "authorized_deferred"]
+  }
+}

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security concern
+    url: https://github.com/sunnykgupta/AutoRepo.ai/blob/main/SECURITY.md
+    about: Do not disclose suspected vulnerabilities in a public issue. Follow the current security policy instead.

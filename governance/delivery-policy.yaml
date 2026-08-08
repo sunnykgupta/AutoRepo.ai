@@ -1,0 +1,29 @@
+schema_version: 1
+policy_id: "autorepo-delivery-v1"
+canonical_record: "Git-tracked policies, approvals, work items, and evidence"
+scope:
+  package_namespace_pattern: "^@autorepo/[a-z0-9]+(?:-[a-z0-9]+)*$"
+  v1_atlassian: "fake-only, non-canonical, no live destination write"
+change_requirements:
+  - "Use a focused, reviewable Git change."
+  - "State intended outcome, affected paths/packages, dependencies, validation, and clean-room provenance."
+  - "Change tests and documentation with behavior, contract, or policy changes."
+  - "Use immutable full-SHA action references and least workflow permissions."
+review_requirements:
+  - "Independent review is required before merge."
+  - "Authors and executing agents cannot approve their own similarity exception."
+  - "Security exceptions require O2 and a second independent human reviewer; otherwise they are blocked."
+  - "Unresolved clean-room or security findings block merge."
+evidence_requirements:
+  - "Record tests and checks actually run with their outcomes."
+  - "Record the authority exercised for an O1/O2 decision held by the same bootstrap human."
+  - "Do not represent branch, chat, fake preview, or elapsed time as canonical delivery evidence."
+release_and_provider_boundaries:
+  - "No protected-main or release control activates without active O1."
+  - "No public private-vulnerability intake activates without active O2 and verified provider route read-back."
+  - "No managed Cloudflare, Railway, or Supabase write occurs without active O3."
+  - "No live Jira/Confluence transport, credential, destination, publication, or reverse synchronization exists in v1."
+future_ledger_transition: >-
+  When the canonical work-item ledger is added, it supersedes bootstrap change
+  descriptions and records work items under work/items with append-only
+  evidence under work/evidence.

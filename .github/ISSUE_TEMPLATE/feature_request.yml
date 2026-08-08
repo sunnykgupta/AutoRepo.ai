@@ -1,0 +1,39 @@
+name: Feature request
+description: Propose an outcome or improvement for AutoRepo.ai.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+assignees: ["sunnykgupta"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem and the outcome you need. Keep confidential implementation,
+        customer, and credential data out of this public form.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What user or maintainer problem does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe the desired behavior, alternatives considered, and relevant constraints.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links to public standards, prior art, or mockups are welcome. Do not attach private material.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This request contains no secrets, private data, or copied restricted material.
+          required: true
+        - label: I searched existing issues for a duplicate.
+          required: true

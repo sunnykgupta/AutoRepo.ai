@@ -1,0 +1,71 @@
+schema_version: 1
+repository: "sunnykgupta/AutoRepo.ai"
+principals:
+  sunny-r-gupta:
+    principal_id: "principal:sunny-r-gupta"
+    type: "human"
+    active: true
+    name: "Sunny R Gupta"
+    github: "sunnykgupta"
+authorities:
+  - id: "O1"
+    record_id: "authority:O1:bootstrap-2026-08-08"
+    title: "program/release"
+    status: "active"
+    holder:
+      principal_id: "principal:sunny-r-gupta"
+      type: "human"
+      active: true
+      name: "Sunny R Gupta"
+      github: "sunnykgupta"
+    activation:
+      basis: "approved bootstrap authority record in governance/approvals/G0-v2.yaml"
+      required_before:
+        - "protected-main controls"
+        - "release controls"
+    restrictions:
+      - "Record the O1 authority when the holder also acts as O2."
+      - "Do not treat an agent or bot as an accountable authority."
+  - id: "O2"
+    record_id: "authority:O2:bootstrap-2026-08-08"
+    title: "security"
+    status: "active"
+    holder:
+      principal_id: "principal:sunny-r-gupta"
+      type: "human"
+      active: true
+      name: "Sunny R Gupta"
+      github: "sunnykgupta"
+    activation:
+      basis: "approved bootstrap authority record in governance/approvals/G0-v2.yaml"
+      private_reporting_route:
+        provider: "GitHub Private Vulnerability Reporting"
+        status: "active_verified_by_api_readback"
+        url: "https://github.com/sunnykgupta/AutoRepo.ai/security/advisories/new"
+        verified_at: "2026-08-08T05:59:00Z"
+      required_before:
+        - "public private-vulnerability intake"
+        - "privileged security disposition"
+        - "release-candidate security approval"
+    restrictions:
+      - "Security exceptions require a second independent human reviewer or remain blocked."
+      - "An author, executing agent, or bot cannot approve its own security finding or exception."
+      - "O2 is distinct from O1 despite the shared bootstrap holder."
+  - id: "O3"
+    record_id: "authority:O3:inactive-bootstrap"
+    title: "cloud-cost/teardown"
+    status: "inactive"
+    holder: null
+    activation:
+      required_before:
+        - "managed Cloudflare, Railway, or Supabase resource writes"
+        - "managed deployment apply, DNS mutation, teardown, or credential/resource rotation"
+      required_record:
+        - "named human holder"
+        - "budget ceiling and expiry"
+        - "allowed account/project aliases and DNS scope"
+        - "cleanup deadline"
+    restrictions:
+      - "No managed-provider write is authorized while O3 is inactive."
+      - "Local/CI work and read-only provider discovery do not activate O3."
+security_exceptions: []

@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible problem in AutoRepo.ai.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: ["sunnykgupta"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem. Do not include credentials,
+        private data, or suspected vulnerabilities in this public form.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and its impact.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest repeatable sequence, including expected and actual behavior.
+      placeholder: |
+        1. ...
+        2. ...
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include non-sensitive runtime, browser, operating system, and version details.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I removed secrets, private data, and security-sensitive details.
+          required: true
+        - label: I searched existing issues for a duplicate.
+          required: true

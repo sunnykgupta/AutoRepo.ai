@@ -1,0 +1,20 @@
+name: dependency-review
+
+on:
+  pull_request:
+
+# Dependency Review analyzes an untrusted diff without secrets or write access.
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    name: dependency-review
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Review dependency, vulnerability, and license changes
+        uses: actions/dependency-review-action@3c4e3dcb1aa7874d2c16be7d79418e9b7efd6261 # v4.8.2
+        with:
+          fail-on-severity: high
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, CC0-1.0, Unlicense

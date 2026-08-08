@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autorepo.ai/governance/source-inventory.attestation.schema.json",
+  "title": "Public clean-room source inventory attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "schema",
+    "policy_version",
+    "attestation",
+    "restricted_inventory",
+    "immutable_external_evidence",
+    "public_disclosure",
+    "author_review_requirement"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "schema": { "const": "governance/source-inventory.attestation.schema.json" },
+    "policy_version": { "const": "autorepo-clean-room-v1" },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "result", "recorded_at"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "status": {
+          "enum": [
+            "inventory_recorded_pending_external_evidence_references",
+            "scan_attested"
+          ]
+        },
+        "result": { "type": "string", "minLength": 1 },
+        "recorded_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "restricted_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest_algorithm", "digest", "entry_count"],
+      "properties": {
+        "digest_algorithm": { "const": "sha256" },
+        "digest": {
+          "const": "c5fe7b1bb77b54cdfdde3bfee3d2b90cada3a6ee57cc5e67669ed0710602b39c"
+        },
+        "entry_count": { "const": 4 }
+      }
+    },
+    "immutable_external_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "restricted_scan_report_sha256",
+        "restricted_tool_manifest_sha256",
+        "public_boundary"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "references_required_before_scan_attestation",
+            "references_recorded"
+          ]
+        },
+        "restricted_scan_report_sha256": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "restricted_tool_manifest_sha256": {
+          "oneOf": [
+            { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "public_boundary": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "const": "references_required_before_scan_attestation" } },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "restricted_scan_report_sha256": { "type": "null" },
+              "restricted_tool_manifest_sha256": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "status": { "const": "references_recorded" } },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "restricted_scan_report_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "restricted_tool_manifest_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            }
+          }
+        }
+      ]
+    },
+    "public_disclosure": { "type": "string", "minLength": 1 },
+    "author_review_requirement": { "type": "string", "minLength": 1 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "attestation": { "properties": { "status": { "const": "scan_attested" } } }, "immutable_external_evidence": { "properties": { "status": { "const": "references_recorded" } } } },
+        "required": ["attestation", "immutable_external_evidence"]
+      },
+      "then": true,
+      "else": {
+        "properties": {
+          "attestation": {
+            "properties": {
+              "status": { "const": "inventory_recorded_pending_external_evidence_references" }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "This public record may expose only the fixed inventory digest, entry count, policy version, scan/attestation state, and opaque SHA-256 references. It must never expose restricted source locators, commits, paths, names, manifests, scan contents, or tool contents."
+}

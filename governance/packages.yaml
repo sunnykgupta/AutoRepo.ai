@@ -1,0 +1,10 @@
+schema_version: 1
+policy_id: "autorepo-package-namespace-v1"
+package_namespace: "@autorepo"
+package_name_pattern: "^@autorepo/[a-z0-9]+(?:-[a-z0-9]+)*$"
+rules:
+  - "All source packages use the declared namespace and match the package-name pattern."
+  - "Package names are explicit; they are never derived by transforming the product name."
+  - "A package declaration records its owner, purpose, dependencies, and path when the package exists."
+  - "No source packages are declared at the G1 baseline."
+packages: []

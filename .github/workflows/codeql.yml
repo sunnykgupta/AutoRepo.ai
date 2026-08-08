@@ -1,0 +1,68 @@
+name: codeql
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '41 4 * * 1'
+
+# Pull requests are analyzed with a read-only token and never upload findings.
+# Uploads occur only for trusted main/scheduled revisions in the separate job.
+permissions:
+  contents: read
+
+jobs:
+  analyze-pull-request:
+    if: github.event_name == 'pull_request'
+    name: analyze-pull-request
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the submitted revision without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Initialize CodeQL without result upload
+        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          languages: javascript-typescript
+      - name: Set up the required Node.js version
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Set the required npm version
+        run: npm install --global npm@11.19.0
+      - name: Build with the root package contract
+        run: npm ci --ignore-scripts
+      - name: Analyze without uploading untrusted results
+        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          upload: false
+  analyze-trusted-revision:
+    if: github.event_name != 'pull_request'
+    name: analyze-trusted-revision
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Check out the trusted revision without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          languages: javascript-typescript
+      - name: Set up the required Node.js version
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Set the required npm version
+        run: npm install --global npm@11.19.0
+      - name: Build with the root package contract
+        run: npm ci --ignore-scripts
+      - name: Analyze and upload trusted results
+        uses: github/codeql-action/analyze@5595ccaf912efad79be6eef63a5619ff05969be3 # v4

@@ -1,0 +1,33 @@
+{
+  "verification_status": "partially-verified",
+  "authorization_status": "authorized-deferred",
+  "settings_mutation_performed_by_this_change": false,
+  "checked_at": "2026-08-08T05:59:00Z",
+  "checked_by": "Authorized O1/O2 bootstrap maintainer",
+  "desired": {
+    "main_ruleset": {
+      "name": "main-governed-baseline",
+      "contract": "../rulesets/main.json"
+    },
+    "release_environment": {
+      "name": "release",
+      "contract": "../environments/release.json"
+    }
+  },
+  "observed": {
+    "private_vulnerability_reporting": {
+      "enabled": true,
+      "status": "matched"
+    },
+    "main_rulesets": {
+      "count": 0,
+      "status": "authorized-deferred"
+    },
+    "release_environments": {
+      "count": 0,
+      "status": "authorized-deferred"
+    },
+    "branch_protection": "not-read-separately"
+  },
+  "next_step": "An authorized maintainer may apply the desired ruleset and release environment after confirming required contexts and independent-review limitations; read back the resulting live state before replacing these deferred observations."
+}

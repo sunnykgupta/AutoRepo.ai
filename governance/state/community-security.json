@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-08T05:59:00Z",
+  "community": {
+    "status": "active",
+    "evidence": "The repository contains its MIT license, README, contribution guide, code of conduct, support policy, governance, maintainers, and issue/PR templates.",
+    "settings_scope": "Community documentation state only; it does not claim the desired ruleset or release environment is live."
+  },
+  "security": {
+    "status": "active",
+    "owner_role": "O2",
+    "provider": "GitHub Private Vulnerability Reporting",
+    "provider_readback": true,
+    "public_route": "https://github.com/sunnykgupta/AutoRepo.ai/security/advisories/new",
+    "limitations": "No fixed response-time or remediation-time promise is made. Security exceptions require a second independent human or remain blocked.",
+    "settings_scope": "GitHub Private Vulnerability Reporting is matched true; desired main ruleset and release environment counts are observed at zero and authorized deferred."
+  }
+}

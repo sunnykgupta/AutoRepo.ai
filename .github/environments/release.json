@@ -1,0 +1,28 @@
+{
+  "contract_status": "desired-only",
+  "name": "release",
+  "purpose": "Human-gated release evidence and publication approval; not a deployment workflow.",
+  "deployment_branch_policy": {
+    "protected_branches": true,
+    "custom_branch_policies": false,
+    "intended_branch": "main"
+  },
+  "required_reviewers": [
+    {
+      "type": "User",
+      "login": "sunnykgupta",
+      "authorities": ["O1 program/release", "O2 security"]
+    }
+  ],
+  "prevent_self_review": true,
+  "activation_prerequisites": [
+    "Verify the O1 GitHub principal and record the result.",
+    "Verify the O2 private reporting route and record the result.",
+    "Configure a second independent human before an exception or security disposition that cannot be self-approved.",
+    "Read back the live environment after configuration and update verified-live.json with observed facts only."
+  ],
+  "out_of_scope": [
+    "This contract does not authorize provider deployment, DNS changes, or managed-resource writes.",
+    "No release or provider workflow is introduced by this baseline."
+  ]
+}
