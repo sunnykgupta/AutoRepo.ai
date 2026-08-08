@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "package_policy": "governance/packages.yaml",
+  "g0_approval_record": "governance/approvals/G0-v2.yaml",
+  "authority_record": "governance/owners.yaml",
+  "clean_room_attestation": "governance/source-inventory.attestation.yaml",
+  "clean_room_schema": "governance/source-inventory.attestation.schema.json",
+  "community_security_state": "governance/state/community-security.json",
+  "settings_evidence": "governance/evidence/repository-settings.json",
+  "workflow_directory": ".github/workflows",
+  "owners_schema": "governance/owners.schema.json"
+}
