@@ -1,53 +1,81 @@
 # AutoRepo.ai
 
-AutoRepo.ai is a public, MIT-licensed foundation for building a governed,
-provider-portable SaaS application and its accompanying documentation.
+AutoRepo.ai is a lightweight learning guide for making repositories that keep moving when their goals are clear.
 
-The repository is in its governed bootstrap phase. Git-tracked policies and
-evidence are the canonical record for decisions and delivery. GitHub-rendered
-files are the public documentation path until a later, separately approved
-deployment gate.
+It teaches a practical habit: describe the outcome, make the next piece of work safe and inspectable, use feedback to learn, and keep people involved where judgment matters. This is not a promise of unattended software; it is a way to make useful progress easier to continue.
 
-## Current baseline
+## Learn the loop
 
-- License holder: Sunny R Gupta.
-- Package namespace: `@autorepo/*` only. Package names use lowercase letters,
-  digits, and hyphens after the scope.
-- Locked v1 stack: Node.js 24, npm 11, Astro, React/Vite, NestJS with Fastify,
-  Prisma with reviewed SQL, Turborepo, PostgreSQL 17, and pg-boss.
-- Jira and Confluence are fake-only, non-canonical integrations in v1. No live
-  destination, credentials, transport, publication, or reverse sync is in
-  scope.
-- Managed Cloudflare, Railway, and Supabase resources must not be created,
-  changed, or deleted without active O3 authority. O3 is currently inactive.
+A self-sustaining repository repeatedly moves through seven steps:
 
-## Start here
+1. **Understand** — state the outcome, constraints, and signals of success.
+2. **Plan** — choose the smallest safe path and name decisions that need a person.
+3. **Build** — make one bounded change with the relevant context nearby.
+4. **Verify** — run checks that demonstrate the change works.
+5. **Review** — inspect the result, trade-offs, and evidence.
+6. **Learn** — record what changed the plan or revealed a better approach.
+7. **Continue** — promote the next clear piece of work.
 
-1. Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a change.
-2. Follow the clean-room rules in
-   [governance/clean-room-policy.md](governance/clean-room-policy.md).
-3. Review the decision and authority model in [GOVERNANCE.md](GOVERNANCE.md)
-   and [MAINTAINERS.md](MAINTAINERS.md).
-4. Give automation the restrictions in [AGENTS.md](AGENTS.md).
+## Start in 10 minutes
 
-The delivery and dependency baseline is defined in
-[`governance/delivery-policy.yaml`](governance/delivery-policy.yaml) and
-[`governance/dependency-policy.yaml`](governance/dependency-policy.yaml).
+1. Copy the four starter files into a place your contributors can find:
+   - [`templates/GOAL.md`](templates/GOAL.md)
+   - [`templates/WORK.md`](templates/WORK.md)
+   - [`templates/DECISION.md`](templates/DECISION.md)
+   - [`templates/AGENTS.md`](templates/AGENTS.md)
+2. Fill in one small, user-facing goal and the first bounded work item.
+3. Name the checks or review evidence that make the work complete.
+4. Use the agent instructions to make escalation and intervention expectations explicit.
 
-## Security and support
+Need a concrete reference? [`examples/first-loop/`](examples/first-loop/) shows the same four files filled in for a small contributor-onboarding improvement. Adapt it; do not treat it as a required process.
 
-GitHub Private Vulnerability Reporting is active and verified by provider
-read-back. See [SECURITY.md](SECURITY.md) before disclosing a vulnerability.
-General help and non-security questions are covered by [SUPPORT.md](SUPPORT.md).
+## Site and status
 
-## Status
+The learning guide is a static Astro site. It has no accounts, runtime agents, background jobs, telemetry, or hosted control plane.
 
-G0 approval is recorded at
-[`governance/approvals/G0-v2.yaml`](governance/approvals/G0-v2.yaml). This G1
-baseline establishes repository governance and does not claim that later
-runtime, deployment, or release capabilities already exist.
+After this change is merged and the GitHub Pages workflow deploys, the site will be available at:
+
+<https://sunnykgupta.github.io/AutoRepo.ai/>
+
+Until then, that URL may not serve this version of the guide.
+
+### Run the site locally
+
+```sh
+npm ci
+npm run site:dev
+```
+
+Build the Pages artifact locally with its project-site path:
+
+```sh
+PUBLIC_BASE_PATH=/AutoRepo.ai/ npm run site:build
+```
+
+Check Astro types and diagnostics:
+
+```sh
+npm run site:check
+```
+
+To run the shared preview server, use `npm run site:preview`. It binds outside
+localhost and accepts only the Vorflux preview host suffix.
+
+## Autonomy boundaries
+
+Routine, reversible preview or staging deployments may continue when repository policy explicitly permits them. Ask for human approval before a production or public release, an irreversible or destructive action, an access or credential change, spending, a legal or security posture change, or an unclear material trade-off.
+
+## Contribute and get help
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a change.
+- Report vulnerabilities privately through [SECURITY.md](SECURITY.md), not in a public issue or pull request.
+- Use [SUPPORT.md](SUPPORT.md) for non-security help.
+- Follow the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## For maintainers
+
+Governance records remain the canonical source for project decisions and delivery. Maintainers should review [GOVERNANCE.md](GOVERNANCE.md), [AGENTS.md](AGENTS.md), the [delivery policy](governance/delivery-policy.yaml), [dependency policy](governance/dependency-policy.yaml), and [clean-room policy](governance/clean-room-policy.md) before material changes.
 
 ## License
 
-AutoRepo.ai is licensed under the [MIT License](LICENSE). See [NOTICE.md](NOTICE.md)
-for baseline notices.
+AutoRepo.ai is licensed under the [MIT License](LICENSE). See [NOTICE.md](NOTICE.md) for notices.

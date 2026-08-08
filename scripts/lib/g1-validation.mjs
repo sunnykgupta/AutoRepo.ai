@@ -10,6 +10,7 @@ const SHA256 = /^[a-f0-9]{64}$/;
 const ROLES = new Set(['O1', 'O2', 'O3']);
 const STATE_STATUSES = new Set(['not_configured', 'active']);
 const ISO_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+const TRUSTED_WRITE_TRIGGERS = new Set(['push', 'schedule', 'workflow_dispatch']);
 
 function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -461,14 +462,52 @@ function mayRunOnPullRequest(job) {
     /github\.event_name\s*==\s*['"](?:push|schedule|workflow_dispatch)['"]/.test(condition));
 }
 
-function permissionErrors(value, label, allowTrustedSecurityWrites) {
+function triggerConfiguration(workflow) {
+  return workflow.on ?? workflow.true;
+}
+
+function hasOnlyMainPush(trigger) {
+  return isObject(trigger) && Array.isArray(trigger.branches) &&
+    trigger.branches.length === 1 && trigger.branches[0] === 'main';
+}
+
+function hasMainRefGuard(job) {
+  return typeof job?.if === 'string' && /github\.ref\s*==\s*['"]refs\/heads\/main['"]/.test(job.if);
+}
+
+function hasTrustedWriteTriggers(workflow, triggers) {
+  const configuration = triggerConfiguration(workflow);
+  let hasTrustedTrigger = false;
+  for (const trigger of triggers) {
+    if (trigger === 'pull_request') continue;
+    if (!TRUSTED_WRITE_TRIGGERS.has(trigger)) return false;
+    if (trigger === 'push') {
+      if (!isObject(configuration) || !hasOnlyMainPush(configuration.push)) return false;
+      hasTrustedTrigger = true;
+      continue;
+    }
+    if (trigger === 'schedule') {
+      hasTrustedTrigger = true;
+      continue;
+    }
+    if (trigger === 'workflow_dispatch') {
+      if (!isObject(workflow.jobs) || Object.keys(workflow.jobs).length === 0 ||
+        !Object.values(workflow.jobs).every(hasMainRefGuard)) return false;
+      hasTrustedTrigger = true;
+      continue;
+    }
+  }
+  return hasTrustedTrigger;
+}
+
+function permissionErrors(value, label, allowTrustedWrites) {
   const permissions = normalizePermissions(value);
   if (!value) return [`${label}: explicit top-level least-privilege permissions are required`];
   if (permissions.scalar) return permissions.scalar === 'read-all' ? [] : [`${label}: permissions scalar must be read-all`];
   const errors = [];
   if (permissions.entries.contents !== 'read') errors.push(`${label}: permissions must set contents: read`);
   for (const [scope, level] of Object.entries(permissions.entries)) {
-    if (level === 'write' && !(allowTrustedSecurityWrites && ['id-token', 'security-events'].includes(scope))) {
+    if (level === 'write' && !(allowTrustedWrites && ['id-token', 'pages', 'security-events'].includes(scope))) {
       errors.push(`${label}: ${scope} permission must not exceed read`);
     } else if (!['read', 'none', 'write'].includes(level)) errors.push(`${label}: ${scope} permission is invalid`);
   }
@@ -488,12 +527,13 @@ export function validateWorkflowDocument(text, label = 'workflow') {
   const errors = [...parsed.errors];
   if (!parsed.workflow) return errors;
   const hasPullRequest = parsed.triggers.has('pull_request');
+  const trustedWriteTriggers = hasTrustedWriteTriggers(parsed.workflow, parsed.triggers);
   if (parsed.triggers.has('pull_request_target')) errors.push(`${label}: pull_request_target is forbidden`);
-  errors.push(...permissionErrors(parsed.workflow.permissions, label, !hasPullRequest));
+  errors.push(...permissionErrors(parsed.workflow.permissions, label, trustedWriteTriggers && !hasPullRequest));
   if (isObject(parsed.workflow.jobs)) {
     for (const [name, job] of Object.entries(parsed.workflow.jobs)) {
       if (isObject(job) && job.permissions) {
-        errors.push(...permissionErrors(job.permissions, `${label}: job ${name}`, !(hasPullRequest && mayRunOnPullRequest(job))));
+        errors.push(...permissionErrors(job.permissions, `${label}: job ${name}`, trustedWriteTriggers && !(hasPullRequest && mayRunOnPullRequest(job))));
       }
     }
   }
