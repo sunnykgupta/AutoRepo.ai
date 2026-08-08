@@ -1,0 +1,29 @@
+schema_version: 1
+schema: "governance/source-inventory.attestation.schema.json"
+policy_version: "autorepo-clean-room-v1"
+attestation:
+  id: "autorepo-clean-room-attestation-v1"
+  status: "scan_attested"
+  result: "restricted inventory and public-output scan passed at baseline"
+  recorded_at: "2026-08-08T06:27:00Z"
+restricted_inventory:
+  digest_algorithm: "sha256"
+  digest: "c5fe7b1bb77b54cdfdde3bfee3d2b90cada3a6ee57cc5e67669ed0710602b39c"
+  entry_count: 4
+immutable_external_evidence:
+  status: "references_recorded"
+  restricted_scan_report_sha256: "de5eeca06061af47d037d8b2c938a2e03250201392b1b08dd3a06e32de75427a"
+  restricted_tool_manifest_sha256: "e729de518969cb5a542caf8daee80f66c42db08e1e73d073309deaaac3967f3b"
+  public_boundary: >-
+    Immutable external scan-report and tool-manifest SHA-256 references are
+    required before this record may attest a scan result. Their content and
+    restricted-storage locators are not public.
+public_disclosure: >-
+  This attestation intentionally contains only the permitted inventory digest,
+  entry count, policy version, and limited attestation metadata. Restricted
+  inventory locators, commits, paths, names, manifests, scan contents, and tool
+  contents are not public.
+author_review_requirement: >-
+  Authors with prior restricted-source access must attest per affected work
+  item, and an independent non-author reviewer must review provenance and scan
+  findings.

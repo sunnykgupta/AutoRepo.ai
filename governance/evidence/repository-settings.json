@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-08-08T05:59:00Z",
+  "source": "Authenticated GitHub REST API read-back",
+  "desired": {
+    "private_vulnerability_reporting": true,
+    "main_ruleset_count": 1,
+    "release_environment_count": 1
+  },
+  "live": {
+    "settings": {
+      "private_vulnerability_reporting": true,
+      "main_ruleset_count": 0,
+      "release_environment_count": 0
+    }
+  },
+  "comparison": {
+    "overall_status": "partially_matched",
+    "scope": "Per-setting comparison; it is not a global matched claim.",
+    "settings": {
+      "private_vulnerability_reporting": {
+        "desired": true,
+        "live": true,
+        "status": "matched"
+      },
+      "main_ruleset_count": {
+        "desired": 1,
+        "live": 0,
+        "status": "authorized_deferred",
+        "desired_contract": ".github/rulesets/main.json"
+      },
+      "release_environment_count": {
+        "desired": 1,
+        "live": 0,
+        "status": "authorized_deferred",
+        "desired_contract": ".github/environments/release.json"
+      }
+    }
+  }
+}

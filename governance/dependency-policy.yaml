@@ -1,0 +1,24 @@
+schema_version: 1
+policy_id: "autorepo-dependency-v1"
+principles:
+  - "A change may proceed only when its declared prerequisites are satisfied."
+  - "Dependencies, package scope, path scope, and exclusive resources must be explicit and reviewable."
+  - "Conflicting scopes and unresolved dependency cycles block the affected change."
+  - "Generated status or dependency views are informative; reviewed Git records remain canonical."
+bootstrap_requirements:
+  - "Describe upstream prerequisites and downstream impact in each material change."
+  - "Do not rely on a branch, worktree, issue comment, chat, or elapsed lease as ownership evidence."
+  - "Coordinate overlapping changes before review; preserve another contributor's unrelated work."
+future_ledger_contract:
+  canonical_item_path: "work/items/<ID>.md"
+  append_only_evidence_path: "work/evidence/<ID>/"
+  states:
+    - "PROPOSED"
+    - "BLOCKED"
+    - "READY"
+    - "CLAIMED"
+    - "IN_REVIEW"
+    - "DONE"
+    - "CANCELLED"
+  claimability: "Only dependency-satisfied READY work is claimable."
+  completion: "DONE requires acceptance evidence tied to the tested and merged SHA."

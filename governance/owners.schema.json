@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autorepo.ai/governance/owners.schema.json",
+  "title": "AutoRepo.ai operational authority registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "repository",
+    "principals",
+    "authorities",
+    "security_exceptions"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "repository": { "const": "sunnykgupta/AutoRepo.ai" },
+    "principals": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/principal" }
+    },
+    "authorities": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/authority" },
+      "allOf": [
+        { "contains": { "properties": { "id": { "const": "O1" } }, "required": ["id"] } },
+        { "contains": { "properties": { "id": { "const": "O2" } }, "required": ["id"] } },
+        { "contains": { "properties": { "id": { "const": "O3" } }, "required": ["id"] } }
+      ]
+    },
+    "security_exceptions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/securityException" }
+    }
+  },
+  "$defs": {
+    "principal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_id", "type", "active", "name", "github"],
+      "properties": {
+        "principal_id": { "type": "string", "pattern": "^principal:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "type": { "const": "human" },
+        "active": { "type": "boolean" },
+        "name": { "type": "string", "minLength": 1 },
+        "github": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$" }
+      }
+    },
+    "holder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["principal_id", "type", "active", "name", "github"],
+      "properties": {
+        "principal_id": { "type": "string", "pattern": "^principal:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "type": { "const": "human" },
+        "active": { "const": true },
+        "name": { "type": "string", "minLength": 1 },
+        "github": { "type": "string", "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$" }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "record_id", "title", "status", "holder", "activation", "restrictions"],
+      "properties": {
+        "id": { "enum": ["O1", "O2", "O3"] },
+        "record_id": { "type": "string", "pattern": "^authority:O[123]:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["active", "inactive"] },
+        "holder": {
+          "oneOf": [
+            { "$ref": "#/$defs/holder" },
+            { "type": "null" }
+          ]
+        },
+        "activation": { "type": "object" },
+        "restrictions": { "type": "array", "items": { "type": "string" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "id": { "const": "O1" } }, "required": ["id"] },
+          "then": {
+            "properties": {
+              "status": { "const": "active" },
+              "holder": { "$ref": "#/$defs/holder" },
+              "record_id": { "pattern": "^authority:O1:[a-z0-9]+(?:-[a-z0-9]+)*$" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "id": { "const": "O2" } }, "required": ["id"] },
+          "then": {
+            "properties": {
+              "status": { "const": "active" },
+              "holder": { "$ref": "#/$defs/holder" },
+              "record_id": { "pattern": "^authority:O2:[a-z0-9]+(?:-[a-z0-9]+)*$" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "id": { "const": "O3" } }, "required": ["id"] },
+          "then": {
+            "properties": {
+              "status": { "const": "inactive" },
+              "holder": { "type": "null" },
+              "record_id": { "pattern": "^authority:O3:[a-z0-9]+(?:-[a-z0-9]+)*$" }
+            }
+          }
+        }
+      ]
+    },
+    "securityException": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exception_id",
+        "status",
+        "requested_by",
+        "approved_by",
+        "independent_human_approval"
+      ],
+      "properties": {
+        "exception_id": { "type": "string", "pattern": "^security-exception:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "status": { "enum": ["requested", "approved", "rejected", "withdrawn", "blocked"] },
+        "requested_by": { "type": "string", "pattern": "^principal:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "approved_by": {
+          "oneOf": [
+            { "type": "string", "pattern": "^principal:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+            { "type": "null" }
+          ]
+        },
+        "independent_human_approval": { "type": "boolean" },
+        "decision_record": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "approved" } }, "required": ["status"] },
+          "then": {
+            "required": ["decision_record"],
+            "properties": {
+              "approved_by": { "type": "string", "pattern": "^principal:[a-z0-9]+(?:-[a-z0-9]+)*$" },
+              "independent_human_approval": { "const": true }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "blocked" } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "approved_by": { "type": "null" },
+              "independent_human_approval": { "const": false }
+            }
+          }
+        }
+      ],
+      "$comment": "For every approved exception, requested_by and approved_by must identify different active human principals. That cross-record identity check is enforced by governance validation, not by JSON Schema alone."
+    }
+  },
+  "$comment": "O1 and O2 may reference the same active human bootstrap principal, but each authority has a distinct record_id. O3 is inactive with a null holder until separately established."
+}
