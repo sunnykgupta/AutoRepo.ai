@@ -28,7 +28,7 @@ jobs:
           node-version: 24.19.0
       - name: Set the required npm version
         run: npm install --global npm@11.19.0
-      - name: Scan tracked content for credential markers
+      - name: Enforce the public-boundary credential and file-shape scan
         run: node .github/scripts/scan-clean-room.mjs
       - name: Install locked dependencies without lifecycle scripts
         run: npm ci --ignore-scripts

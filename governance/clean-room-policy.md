@@ -80,3 +80,10 @@ exception path.
 Restricted inventories, scan reports, dispositions, attestations, and tool
 manifests are retained for the affected release's support life plus three
 years. Public digest and release attestation records remain in Git history.
+
+The fork-safe GitHub workflow runs the public-boundary scanner against tracked
+files without confidential inputs. The stronger restricted scan is deliberately
+separate: `npm run clean-room:restricted-scan` requires an access-controlled
+corpus manifest, emits a hash-only report, and fails closed when that evidence
+is unavailable. CI validates the immutable report and tool-manifest hashes in
+the public attestation; it never receives the confidential corpus itself.
