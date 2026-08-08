@@ -1,0 +1,40 @@
+schema_version: 1
+amendment_id: "g0-squash-merge-pr-1"
+status: "APPROVED"
+approved_by:
+  name: "Sunny R Gupta"
+  github_login: "sunnykgupta"
+  authority: "O1"
+observed_at: "2026-08-08T11:47:45Z"
+session_decisions:
+  - id: 41
+    decision: "Accept the strongest platform-available G0 evidence despite no signed payload API."
+  - id: 42
+    decision: "Approve candidate cb18b84533757f9644dd10eb1aa87fc26b438f25 and authorize squash merge."
+platform_evidence_limit:
+  signed_payload_available: false
+  accepted_available_evidence: true
+  statement: >-
+    Plan ID 4, the observed approval event, same-title resubmission continuity,
+    exact seven-artifact hashes, source-branch commit ordering, and matching Git
+    trees are the strongest evidence exposed by the platform and repository.
+source_delivery:
+  pull_request: "https://github.com/sunnykgupta/AutoRepo.ai/pull/1"
+  branch: "vorflux/g1-governed-repository-final-v2"
+  baseline_commit: "d2a79e2af07894a3766e453113d48999905b32a7"
+  approval_only_commit: "2ebd1734bb67200cf24300ff4c9ea1acbb035a5a"
+  approval_record_blob: "8843a6f608c253b2d291b62840010ef5c5425b60"
+  approval_record_sha256: "355a73dd4ae2a8eb73d68b6e03da59b7ea22dba49ea2579cd1267a5b45f2ad36"
+  candidate_commit: "cb18b84533757f9644dd10eb1aa87fc26b438f25"
+  candidate_tree: "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499"
+merged_delivery:
+  method: "squash"
+  commit: "4b7bc15ce70516af7b720082f47f78a49c5f19d7"
+  tree: "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499"
+  merged_at: "2026-08-08T11:48:38Z"
+invariants:
+  - "The squash commit is the first descendant of the LICENSE-only baseline."
+  - "The squash commit has the LICENSE-only baseline as its sole parent."
+  - "The squash tree exactly equals the reviewed candidate tree."
+  - "The original approval record remains byte-identical in the squash tree."
+  - "This amendment does not claim a platform signature or alter the seven approved artifact hashes."
