@@ -5,6 +5,17 @@
     "plan_id": 4,
     "plan_title": "AutoRepo.ai v2 — Agent-Native Production System",
     "baseline_commit": "d2a79e2",
+    "squash_amendment": {
+      "path": "governance/approvals/G0-squash-amendment.yaml",
+      "amendment_id": "g0-squash-merge-pr-1",
+      "approved_decisions": [41, 42],
+      "source_pull_request": "https://github.com/sunnykgupta/AutoRepo.ai/pull/1",
+      "candidate_commit": "cb18b84533757f9644dd10eb1aa87fc26b438f25",
+      "candidate_tree": "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499",
+      "approval_only_commit": "2ebd173",
+      "squash_merge_commit": "4b7bc15ce70516af7b720082f47f78a49c5f19d7",
+      "squash_tree": "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499"
+    },
     "artifacts": [
       { "name": "v2-autorepo-ai-summary.md", "kind": "plan_summary", "sha256": "dfb8e8ccd884dd267de4961fa53d289e9ca53ce1702ee01e976e3bbdf8478bce" },
       { "name": "v2-autorepo-ai.md", "kind": "implementation_plan", "sha256": "0feb3571d4e2476e2440a0f5b0c64690be61fee0bb0e235b20aacef4f18c4918" },

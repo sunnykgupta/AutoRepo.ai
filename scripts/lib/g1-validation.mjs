@@ -163,8 +163,43 @@ export function validateG0History(root, record, contract, errors) {
     return;
   }
   const firstPaths = git(root, ['diff-tree', '--no-commit-id', '--name-only', '-r', descendants[0]])?.split('\n') ?? [];
-  if (firstPaths.length !== 1 || firstPaths[0] !== 'governance/approvals/G0-v2.yaml') {
-    errors.push('G0 history: first post-baseline commit must contain only the G0 approval record');
+  const approvalOnly = firstPaths.length === 1 && firstPaths[0] === 'governance/approvals/G0-v2.yaml';
+  if (!approvalOnly) {
+    const expected = contract.g0?.squash_amendment;
+    const amendment = expected?.path ? readYaml(join(root, expected.path), errors, 'G0 squash amendment') : undefined;
+    const decisionIds = amendment?.session_decisions?.map((entry) => entry.id);
+    if (!expected || !amendment || amendment.schema_version !== 1 || amendment.status !== 'APPROVED' ||
+      amendment.amendment_id !== expected.amendment_id || amendment.approved_by?.authority !== 'O1' ||
+      amendment.platform_evidence_limit?.signed_payload_available !== false ||
+      amendment.platform_evidence_limit?.accepted_available_evidence !== true ||
+      JSON.stringify(decisionIds) !== JSON.stringify(expected.approved_decisions) ||
+      amendment.source_delivery?.pull_request !== expected.source_pull_request ||
+      amendment.source_delivery?.candidate_commit !== expected.candidate_commit ||
+      amendment.source_delivery?.candidate_tree !== expected.candidate_tree ||
+      amendment.source_delivery?.approval_only_commit !== expected.approval_only_commit ||
+      amendment.merged_delivery?.method !== 'squash' ||
+      amendment.merged_delivery?.commit !== expected.squash_merge_commit ||
+      amendment.merged_delivery?.tree !== expected.squash_tree) {
+      errors.push('G0 history: non-linear approval transition requires the exact O1-approved squash amendment');
+    } else {
+      const firstCommit = git(root, ['rev-parse', descendants[0]]);
+      const firstTree = git(root, ['rev-parse', `${descendants[0]}^{tree}`]);
+      const firstParents = git(root, ['rev-list', '--parents', '-n', '1', descendants[0]])?.split(' ').slice(1) ?? [];
+      const approvalBlob = git(root, ['rev-parse', `${descendants[0]}:governance/approvals/G0-v2.yaml`]);
+      if (firstCommit !== expected.squash_merge_commit || firstTree !== expected.squash_tree ||
+        expected.candidate_tree !== expected.squash_tree || firstParents.length !== 1 ||
+        firstParents[0] !== git(root, ['rev-parse', baseline]) || !approvalBlob) {
+        errors.push('G0 history: audited squash commit, tree, parent, and embedded approval record must exactly match the amendment');
+      }
+      const candidateTree = git(root, ['rev-parse', '--verify', `${expected.candidate_commit}^{tree}`]);
+      if (candidateTree && candidateTree !== expected.candidate_tree) {
+        errors.push('G0 history: locally available reviewed candidate tree does not match the squash amendment');
+      }
+      const approvalPaths = git(root, ['diff-tree', '--no-commit-id', '--name-only', '-r', expected.approval_only_commit]);
+      if (approvalPaths && approvalPaths !== 'governance/approvals/G0-v2.yaml') {
+        errors.push('G0 history: locally available source approval commit is not approval-only');
+      }
+    }
   }
   if (record.repository_baseline.baseline_commit !== contract.g0.baseline_commit) {
     errors.push('G0 history: baseline does not match immutable G1 contract');
