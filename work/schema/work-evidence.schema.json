@@ -1,0 +1,1249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "work-evidence.schema.json",
+  "title": "AutoRepo canonical work evidence event",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/STATE_TRANSITION"
+    },
+    {
+      "$ref": "#/$defs/CLAIM_REQUEST"
+    },
+    {
+      "$ref": "#/$defs/CLAIM"
+    },
+    {
+      "$ref": "#/$defs/OPERATION_REQUEST"
+    },
+    {
+      "$ref": "#/$defs/RENEW"
+    },
+    {
+      "$ref": "#/$defs/RELEASE"
+    },
+    {
+      "$ref": "#/$defs/HANDOFF"
+    },
+    {
+      "$ref": "#/$defs/PAUSE"
+    },
+    {
+      "$ref": "#/$defs/CANCEL_CLAIM"
+    },
+    {
+      "$ref": "#/$defs/RECLAIM"
+    },
+    {
+      "$ref": "#/$defs/REVIEW"
+    },
+    {
+      "$ref": "#/$defs/PROVENANCE_ATTESTATION"
+    },
+    {
+      "$ref": "#/$defs/PROVENANCE_REVIEW"
+    },
+    {
+      "$ref": "#/$defs/ACCEPTANCE"
+    },
+    {
+      "$ref": "#/$defs/WORK_ITEM_AMENDMENT"
+    }
+  ],
+  "$defs": {
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "principal",
+        "github_actor",
+        "kind"
+      ],
+      "properties": {
+        "principal": {
+          "type": "string",
+          "pattern": "^principal:(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "github_actor": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "agent",
+            "maintainer"
+          ]
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "packages",
+        "paths",
+        "exclusive_resources"
+      ],
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^@autorepo/[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+(?:/\\*\\*)?$"
+          },
+          "uniqueItems": true
+        },
+        "exclusive_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,63}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "claimRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "principal",
+        "github_actor",
+        "base_sha",
+        "expires_at",
+        "branch",
+        "worktree",
+        "packages",
+        "paths",
+        "exclusive_resources"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "principal": {
+          "type": "string",
+          "pattern": "^principal:(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "github_actor": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+        },
+        "base_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//)(?!.*\\.lock$)[A-Za-z0-9._/-]+(?<!/)$"
+        },
+        "worktree": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^@autorepo/[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+(?:/\\*\\*)?$"
+          },
+          "uniqueItems": true
+        },
+        "exclusive_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,63}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "principal",
+        "github_actor",
+        "base_sha",
+        "expires_at",
+        "branch",
+        "worktree",
+        "packages",
+        "paths",
+        "exclusive_resources",
+        "request_sha"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "principal": {
+          "type": "string",
+          "pattern": "^principal:(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "github_actor": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+        },
+        "base_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*//)(?!.*\\.lock$)[A-Za-z0-9._/-]+(?<!/)$"
+        },
+        "worktree": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^@autorepo/[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+(?:/\\*\\*)?$"
+          },
+          "uniqueItems": true
+        },
+        "exclusive_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,63}$"
+          },
+          "uniqueItems": true
+        },
+        "request_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    },
+    "renewal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "principal",
+        "github_actor",
+        "expires_at",
+        "packages",
+        "paths",
+        "exclusive_resources"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "principal": {
+          "type": "string",
+          "pattern": "^principal:(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "github_actor": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "packages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^@autorepo/[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "uniqueItems": true
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+(?:/\\*\\*)?$"
+          },
+          "uniqueItems": true
+        },
+        "exclusive_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{1,63}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tested_sha",
+        "merged_sha",
+        "checks"
+      ],
+      "properties": {
+        "tested_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "merged_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "status"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "status": {
+                "const": "passed"
+              }
+            }
+          }
+        }
+      }
+    },
+    "baseEvent": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "event_id",
+        "work_item_id",
+        "sequence",
+        "occurred_at",
+        "type",
+        "actor"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{2,79}$"
+        },
+        "work_item_id": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9-]{1,63}$"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "enum": [
+            "STATE_TRANSITION",
+            "CLAIM_REQUEST",
+            "CLAIM",
+            "OPERATION_REQUEST",
+            "RENEW",
+            "RELEASE",
+            "HANDOFF",
+            "PAUSE",
+            "CANCEL_CLAIM",
+            "RECLAIM",
+            "REVIEW",
+            "PROVENANCE_ATTESTATION",
+            "PROVENANCE_REVIEW",
+            "ACCEPTANCE",
+            "WORK_ITEM_AMENDMENT"
+          ]
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        }
+      }
+    },
+    "STATE_TRANSITION": {
+      "title": "STATE_TRANSITION",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "STATE_TRANSITION"
+            },
+            "from_state": {
+              "enum": [
+                "PROPOSED",
+                "BLOCKED",
+                "READY",
+                "CLAIMED",
+                "IN_REVIEW",
+                "DONE",
+                "CANCELLED"
+              ]
+            },
+            "to_state": {
+              "enum": [
+                "PROPOSED",
+                "BLOCKED",
+                "READY",
+                "CLAIMED",
+                "IN_REVIEW",
+                "DONE",
+                "CANCELLED"
+              ]
+            }
+          },
+          "required": [
+            "from_state",
+            "to_state"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CLAIM_REQUEST": {
+      "title": "CLAIM_REQUEST",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "CLAIM_REQUEST"
+            },
+            "request": {
+              "$ref": "#/$defs/claimRequest"
+            }
+          },
+          "required": [
+            "request"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CLAIM": {
+      "title": "CLAIM",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "CLAIM"
+            },
+            "claim": {
+              "$ref": "#/$defs/claim"
+            }
+          },
+          "required": [
+            "claim"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "RENEW": {
+      "title": "RENEW",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "RENEW"
+            },
+            "renewal": {
+              "$ref": "#/$defs/renewal"
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            }
+          },
+          "required": [
+            "renewal",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "RELEASE": {
+      "title": "RELEASE",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "RELEASE"
+            },
+            "from_state": {
+              "enum": [
+                "CLAIMED",
+                "IN_REVIEW"
+              ]
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "target_claim_id": {
+              "type": "string",
+              "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "from_state",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha",
+            "target_claim_id"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "HANDOFF": {
+      "title": "HANDOFF",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "HANDOFF"
+            },
+            "from_state": {
+              "enum": [
+                "CLAIMED",
+                "IN_REVIEW"
+              ]
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "target_claim_id": {
+              "type": "string",
+              "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "from_state",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha",
+            "target_claim_id"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "PAUSE": {
+      "title": "PAUSE",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "PAUSE"
+            },
+            "from_state": {
+              "enum": [
+                "CLAIMED",
+                "IN_REVIEW"
+              ]
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "target_claim_id": {
+              "type": "string",
+              "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "from_state",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha",
+            "target_claim_id"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "CANCEL_CLAIM": {
+      "title": "CANCEL_CLAIM",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "CANCEL_CLAIM"
+            },
+            "from_state": {
+              "enum": [
+                "CLAIMED",
+                "IN_REVIEW"
+              ]
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "target_claim_id": {
+              "type": "string",
+              "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "from_state",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha",
+            "target_claim_id"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "RECLAIM": {
+      "title": "RECLAIM",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "RECLAIM"
+            },
+            "claim": {
+              "$ref": "#/$defs/claim"
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            }
+          },
+          "required": [
+            "claim",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "REVIEW": {
+      "title": "REVIEW",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "REVIEW"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reviewed_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            }
+          },
+          "required": [
+            "review",
+            "reviewed_sha"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "PROVENANCE_ATTESTATION": {
+      "title": "PROVENANCE_ATTESTATION",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "PROVENANCE_ATTESTATION"
+            },
+            "provenance": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "attestation",
+                "redacted"
+              ],
+              "properties": {
+                "attestation": {
+                  "const": "independently-authored"
+                },
+                "redacted": {
+                  "const": true
+                }
+              }
+            }
+          },
+          "required": [
+            "provenance"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "PROVENANCE_REVIEW": {
+      "title": "PROVENANCE_REVIEW",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "PROVENANCE_REVIEW"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "provenance": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "redacted"
+              ],
+              "properties": {
+                "redacted": {
+                  "const": true
+                }
+              }
+            },
+            "reviewed_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            }
+          },
+          "required": [
+            "review",
+            "provenance",
+            "reviewed_sha"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "ACCEPTANCE": {
+      "title": "ACCEPTANCE",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "ACCEPTANCE"
+            },
+            "acceptance": {
+              "$ref": "#/$defs/acceptance"
+            }
+          },
+          "required": [
+            "acceptance"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "WORK_ITEM_AMENDMENT": {
+      "title": "WORK_ITEM_AMENDMENT",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "WORK_ITEM_AMENDMENT"
+            },
+            "before_metadata_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "after_metadata_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "review": {
+              "$ref": "#/$defs/actor"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_request_event_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{2,79}$"
+            },
+            "operation_request_sha": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            }
+          },
+          "required": [
+            "before_metadata_sha256",
+            "after_metadata_sha256",
+            "operation_actor",
+            "review",
+            "reason",
+            "operation_id",
+            "operation_request_event_id",
+            "operation_request_sha"
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "renewOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_claim_id",
+        "renewal"
+      ],
+      "properties": {
+        "target_claim_id": {
+          "type": "string",
+          "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "renewal": {
+          "$ref": "#/$defs/renewal"
+        }
+      }
+    },
+    "closureOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_claim_id",
+        "from_state"
+      ],
+      "properties": {
+        "target_claim_id": {
+          "type": "string",
+          "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "from_state": {
+          "enum": [
+            "CLAIMED",
+            "IN_REVIEW"
+          ]
+        }
+      }
+    },
+    "reclaimOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_request_id",
+        "claim"
+      ],
+      "properties": {
+        "target_request_id": {
+          "type": "string",
+          "pattern": "^claim-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "claim": {
+          "$ref": "#/$defs/claim"
+        }
+      }
+    },
+    "amendmentOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "before_metadata_sha256",
+        "after_metadata_sha256"
+      ],
+      "properties": {
+        "before_metadata_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "after_metadata_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "operationProposal": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/renewOperation"
+        },
+        {
+          "$ref": "#/$defs/closureOperation"
+        },
+        {
+          "$ref": "#/$defs/reclaimOperation"
+        },
+        {
+          "$ref": "#/$defs/amendmentOperation"
+        }
+      ]
+    },
+    "OPERATION_REQUEST": {
+      "title": "OPERATION_REQUEST",
+      "allOf": [
+        {
+          "$ref": "#/$defs/baseEvent"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "OPERATION_REQUEST"
+            },
+            "operation_id": {
+              "type": "string",
+              "pattern": "^operation-(?=[a-z0-9-]{3,80}$)[a-z0-9]+(?:-[a-z0-9]+)*$"
+            },
+            "operation_type": {
+              "enum": [
+                "RENEW",
+                "RELEASE",
+                "HANDOFF",
+                "PAUSE",
+                "CANCEL_CLAIM",
+                "RECLAIM",
+                "WORK_ITEM_AMENDMENT"
+              ]
+            },
+            "operation_actor": {
+              "$ref": "#/$defs/actor"
+            },
+            "proposal": {
+              "$ref": "#/$defs/operationProposal"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          },
+          "required": [
+            "operation_id",
+            "operation_type",
+            "operation_actor",
+            "proposal",
+            "reason"
+          ],
+          "oneOf": [
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "RENEW"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/renewOperation"
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "RELEASE"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/closureOperation"
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "HANDOFF"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/closureOperation"
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "PAUSE"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/closureOperation"
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "CANCEL_CLAIM"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/closureOperation"
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "RECLAIM"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/reclaimOperation"
+                }
+              }
+            },
+            {
+              "properties": {
+                "operation_type": {
+                  "const": "WORK_ITEM_AMENDMENT"
+                },
+                "proposal": {
+                  "$ref": "#/$defs/amendmentOperation"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

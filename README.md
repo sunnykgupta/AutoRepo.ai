@@ -47,6 +47,30 @@ G0 approval is recorded at
 baseline establishes repository governance and does not claim that later
 runtime, deployment, or release capabilities already exist.
 
+G2a coordination mechanics are non-release and not alpha-eligible. Its desired
+GitHub ruleset is not live until O1 activates it and records a read-back; hosted
+workflow results are therefore not yet a protected gate. No merge queue is
+configured. The G2A bootstrap work item remains `PROPOSED`, so G2a is not
+complete until a follow-up governed proof records a valid claim, review, and
+acceptance history.
+
+`npm run validate:governance` intentionally validates the local canonical
+ledger, generated projections, and documentation only; it prints that Git
+context was not evaluated. Use `GOVERNANCE_BASE_SHA=<full-sha> npm run
+validate:governance:git` for append-only, diff, ancestry, bootstrap, claim, and
+work-item immutability validation. Pull-request and merge-group workflows use
+that full Git-context command and fail closed without the base SHA.
+
+Full pull-request validation authenticates each newly added evidence event by
+requiring `event.actor.github_actor` to equal the PR's `GITHUB_ACTOR`.
+Merge-group validation replays the resulting history without binding the queue
+actor. This is a desired workflow assurance only: the desired ruleset and
+required context are not currently protected or live.
+
+The governance workflow's push trigger is limited to `main` and uses the push
+event's prior SHA as its full-validation base. A repository-creation push with
+an all-zero prior SHA fails closed with an explicit no-comparable-base message.
+
 ## License
 
 AutoRepo.ai is licensed under the [MIT License](LICENSE). See [NOTICE.md](NOTICE.md)

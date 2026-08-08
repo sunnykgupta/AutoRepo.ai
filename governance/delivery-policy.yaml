@@ -23,7 +23,8 @@ release_and_provider_boundaries:
   - "No public private-vulnerability intake activates without active O2 and verified provider route read-back."
   - "No managed Cloudflare, Railway, or Supabase write occurs without active O3."
   - "No live Jira/Confluence transport, credential, destination, publication, or reverse synchronization exists in v1."
-future_ledger_transition: >-
-  When the canonical work-item ledger is added, it supersedes bootstrap change
-  descriptions and records work items under work/items with append-only
-  evidence under work/evidence.
+canonical_ledger:
+  work_items: "work/items/<ID>.md"
+  evidence: "work/evidence/<ID>/"
+  source_precedence: "Git-tracked policy, canonical work item, append-only evidence, generated projections, fake previews"
+  gate_posture: "G2a is non-release and not alpha-eligible."

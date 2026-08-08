@@ -14,7 +14,13 @@
     "clean-room:restricted-scan": "node scripts/clean-room/scan.mjs",
     "test": "node --test tests/**/*.test.mjs",
     "validate:g1": "node scripts/g1-validate.mjs",
-    "validate": "npm run format:check && npm run lint && npm test && npm run validate:g1"
+    "docs:validate": "node scripts/docs/validate-metadata.mjs",
+    "test:governance": "node --test tests/governance.test.mjs",
+    "governance:worktree-binding": "node scripts/governance/worktree-binding.mjs",
+    "validate:integrations": "node scripts/integrations/validate.mjs",
+    "validate:governance": "node scripts/governance/validate.mjs --local-ledger-only && node scripts/governance/generate-views.mjs --check && node .github/scripts/generate-codeowners.mjs --check && npm run docs:validate",
+    "validate:governance:git": "node scripts/governance/validate.mjs && node scripts/governance/generate-views.mjs --check && node .github/scripts/generate-codeowners.mjs --check && npm run docs:validate",
+    "validate": "npm run format:check && npm run lint && npm test && npm run validate:g1 && npm run validate:governance && npm run validate:integrations"
   },
   "dependencies": {
     "ajv": "8.20.0",

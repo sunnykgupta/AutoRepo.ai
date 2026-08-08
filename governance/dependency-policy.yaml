@@ -9,7 +9,7 @@ bootstrap_requirements:
   - "Describe upstream prerequisites and downstream impact in each material change."
   - "Do not rely on a branch, worktree, issue comment, chat, or elapsed lease as ownership evidence."
   - "Coordinate overlapping changes before review; preserve another contributor's unrelated work."
-future_ledger_contract:
+canonical_ledger_contract:
   canonical_item_path: "work/items/<ID>.md"
   append_only_evidence_path: "work/evidence/<ID>/"
   states:
@@ -22,3 +22,4 @@ future_ledger_contract:
     - "CANCELLED"
   claimability: "Only dependency-satisfied READY work is claimable."
   completion: "DONE requires acceptance evidence tied to the tested and merged SHA."
+  generated_views: "work/views are informative and must be regenerated from canonical Git records."

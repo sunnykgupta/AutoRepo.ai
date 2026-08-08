@@ -32,6 +32,7 @@
         "required_status_checks": [
           { "context": "ci / node" },
           { "context": "governance / repository-baseline" },
+          { "context": "governance / coordination" },
           { "context": "clean-room / policy" },
           { "context": "security / dependency-and-secret-audit" }
         ]
