@@ -1,0 +1,30 @@
+name: scorecard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '59 4 * * 1'
+
+# Scorecard only evaluates trusted main/scheduled revisions. It is deliberately
+# absent from pull_request so untrusted code never receives upload permissions.
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analysis:
+    name: analysis
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out the trusted revision without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Run OpenSSF Scorecard and upload trusted results
+        uses: ossf/scorecard-action@dc50aa9510b46c811795eb24b2f1ba02a914e534 # v2.3.3
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true

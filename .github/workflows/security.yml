@@ -1,0 +1,36 @@
+name: security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 4 * * 1'
+
+# Security checks remain read-only on every trigger. This baseline does not add
+# a privileged release, deployment, provider, or security-disposition path.
+permissions:
+  contents: read
+
+jobs:
+  dependency-and-secret-audit:
+    name: dependency-and-secret-audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out the submitted revision without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Set up the required Node.js version
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Set the required npm version
+        run: npm install --global npm@11.19.0
+      - name: Scan tracked content for credential markers
+        run: node .github/scripts/scan-clean-room.mjs
+      - name: Install locked dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high

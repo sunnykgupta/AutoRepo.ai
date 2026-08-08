@@ -1,0 +1,28 @@
+name: clean-room
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# The scan processes only the submitted checkout. It receives no secrets and no
+# write token, so it is safe to execute for pull requests from forks.
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: policy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out the submitted revision without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Scan tracked content for credential markers
+        run: node .github/scripts/scan-clean-room.mjs
