@@ -10,14 +10,16 @@ on:
 # absent from pull_request so untrusted code never receives upload permissions.
 permissions:
   contents: read
-  id-token: write
-  security-events: write
 
 jobs:
   analysis:
     name: analysis
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
     steps:
       - name: Check out the trusted revision without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

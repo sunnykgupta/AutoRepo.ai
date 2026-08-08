@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import test from 'node:test';
-import { findPullRequestSafetyViolations, findUnpinnedActionLines, validateBaseline } from './validate-github-baseline.mjs';
+import { findPullRequestSafetyViolations, findUnpinnedActionLines, parseWorkflowYaml, validateBaseline } from './validate-github-baseline.mjs';
+
+const repoRoot = process.cwd();
 
 test('accepts full-SHA action references with version comments', () => {
   const workflow = 'uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4\n';
@@ -42,6 +46,17 @@ test('allows write permissions only in a job gated away from pull requests', () 
   ].join('\n');
   assert.deepEqual(findUnpinnedActionLines(workflow), []);
   assert.deepEqual(findPullRequestSafetyViolations(workflow), []);
+});
+
+test('keeps trusted Scorecard upload permissions at job scope', () => {
+  const workflow = readFileSync(resolve(repoRoot, '.github/workflows/scorecard.yml'), 'utf8');
+  const document = parseWorkflowYaml(workflow);
+  assert.deepEqual(document.permissions, { contents: 'read' });
+  assert.deepEqual(document.jobs.analysis.permissions, {
+    contents: 'read',
+    'id-token': 'write',
+    'security-events': 'write',
+  });
 });
 
 test('rejects mutable action references and unsafe pull request capabilities', () => {
