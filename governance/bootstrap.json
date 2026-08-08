@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "bootstrap_id": "g2a-coordination-bootstrap",
+  "base_sha": "11129c8de6829327075b829c971bd62a8dbc9d80",
+  "work_item_id": "G2A",
+  "required_contracts": [
+    "work/schema/work-evidence.schema.json",
+    "work/schema/work-item.schema.json"
+  ]
+}

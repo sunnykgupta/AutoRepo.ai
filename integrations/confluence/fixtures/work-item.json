@@ -1,0 +1,10 @@
+{
+  "id": "FAKE-1",
+  "title": "SYNTHETIC Confluence render fixture",
+  "state": "READY",
+  "dependencies": [],
+  "synthetic": true,
+  "canonical": false,
+  "provenance": "SYNTHETIC FIXTURE",
+  "notice": "NON-CANONICAL — FAKE — NO DESTINATION WRITE"
+}

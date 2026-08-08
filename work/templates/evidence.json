@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "event_id": "event-example-001",
+  "work_item_id": "EXAMPLE-1",
+  "sequence": 1,
+  "occurred_at": "2026-08-08T00:00:00Z",
+  "type": "STATE_TRANSITION",
+  "actor": {
+    "principal": "principal:example-human",
+    "github_actor": "example-human",
+    "kind": "human"
+  },
+  "from_state": "PROPOSED",
+  "to_state": "READY"
+}

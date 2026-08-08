@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "state", "dependencies", "synthetic", "canonical", "provenance", "notice"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^FAKE-[0-9]+$" },
+    "title": { "type": "string", "pattern": "^SYNTHETIC " },
+    "state": { "enum": ["PROPOSED", "BLOCKED", "READY", "CLAIMED", "IN_REVIEW", "DONE", "CANCELLED"] },
+    "dependencies": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "synthetic": { "const": true },
+    "canonical": { "const": false },
+    "provenance": { "const": "SYNTHETIC FIXTURE" },
+    "notice": { "const": "NON-CANONICAL — FAKE — NO DESTINATION WRITE" }
+  }
+}

@@ -15,6 +15,9 @@ The current G1 policy files are:
   review, evidence, and release baseline.
 - [`governance/dependency-policy.yaml`](governance/dependency-policy.yaml):
   dependency and scope rules.
+- [`work/schema/work-item.schema.json`](work/schema/work-item.schema.json) and
+  [`work/schema/work-evidence.schema.json`](work/schema/work-evidence.schema.json):
+  closed canonical ledger contracts.
 - [`governance/clean-room-policy.md`](governance/clean-room-policy.md): public
   provenance and scan requirements.
 
@@ -50,10 +53,33 @@ for the per-setting desired/live comparison.
 
 ## Decisions, changes, and evidence
 
-Changes must follow the delivery and dependency policies. Later phases add the
-canonical work-item and append-only evidence ledger. Until then, reviewable Git
-changes must still state scope, dependencies, validation, provenance, and the
-authority used for an operational decision.
+Changes must follow the delivery and dependency policies. Canonical work items
+live at `work/items/<ID>.md`; append-only evidence lives at
+`work/evidence/<ID>/`. Generated status and dependency views are informative,
+checked projections. G2a establishes coordination mechanics only: it is
+non-release and not alpha-eligible.
+
+The initial G2A change is a one-time bootstrap from the exact checked-in base
+in `governance/bootstrap.json`. It introduces a `PROPOSED` work item and the
+contracts without fabricating a claim. Once a base contains the work-item
+schema, that exception is permanently unavailable; later implementation work
+requires canonical two-stage ownership. G2a is not complete while G2A remains
+`PROPOSED` without follow-up governed proof.
+
+Local source validation is explicit: `npm run validate:governance` uses
+`--local-ledger-only` and reports that Git context was not evaluated. It must
+not be treated as append-only or ownership-diff proof. Full validation uses
+`GOVERNANCE_BASE_SHA=<full-sha> npm run validate:governance:git`; hosted
+pull-request and merge-group validation invokes that command and fails closed
+when the base is unavailable. On pull requests, every newly added evidence
+actor binds to the authenticated GitHub actor; reviewed operations therefore
+require an initiator-authenticated request-only PR followed by a later PR
+authenticated as the declared reviewer. Review and provenance-review events
+bind exact reviewed commits, and every introduced commit is validated rather
+than only the final tree. Merge groups support one or more queued pull requests
+as a validated first-parent chain of platform merges; replay does not bind the
+queue actor. This is a desired workflow boundary, not a claim that
+the currently inactive ruleset protects or requires the hosted check.
 
 Policies change through reviewed Git. A policy conflict or ambiguity blocks the
 affected action until O1 resolves provenance/delivery questions or O2 resolves

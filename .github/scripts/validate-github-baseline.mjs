@@ -105,7 +105,7 @@ export async function validateBaseline(repoRoot = process.cwd()) {
 
   const requiredContexts = new Set(ruleset.rules.find((rule) => rule.type === 'required_status_checks')
     ?.parameters?.required_status_checks?.map(({ context }) => context) ?? []);
-  for (const context of ['ci / node', 'governance / repository-baseline', 'clean-room / policy', 'security / dependency-and-secret-audit']) {
+  for (const context of ['ci / node', 'governance / repository-baseline', 'governance / coordination', 'clean-room / policy', 'security / dependency-and-secret-audit']) {
     if (!requiredContexts.has(context)) errors.push(`Main ruleset must require ${context}.`);
   }
 
