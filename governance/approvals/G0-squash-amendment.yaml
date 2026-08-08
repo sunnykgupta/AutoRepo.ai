@@ -22,7 +22,9 @@ source_delivery:
   pull_request: "https://github.com/sunnykgupta/AutoRepo.ai/pull/1"
   branch: "vorflux/g1-governed-repository-final-v2"
   baseline_commit: "d2a79e2af07894a3766e453113d48999905b32a7"
-  approval_only_commit: "2ebd173"
+  approval_only_commit: "2ebd1734bb67200cf24300ff4c9ea1acbb035a5a"
+  approval_record_blob: "8843a6f608c253b2d291b62840010ef5c5425b60"
+  approval_record_sha256: "355a73dd4ae2a8eb73d68b6e03da59b7ea22dba49ea2579cd1267a5b45f2ad36"
   candidate_commit: "cb18b84533757f9644dd10eb1aa87fc26b438f25"
   candidate_tree: "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499"
 merged_delivery:

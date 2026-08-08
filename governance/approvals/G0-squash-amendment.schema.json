@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "amendment_id",
+    "status",
+    "approved_by",
+    "observed_at",
+    "session_decisions",
+    "platform_evidence_limit",
+    "source_delivery",
+    "merged_delivery",
+    "invariants"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "amendment_id": { "const": "g0-squash-merge-pr-1" },
+    "status": { "const": "APPROVED" },
+    "approved_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "github_login", "authority"],
+      "properties": {
+        "name": { "const": "Sunny R Gupta" },
+        "github_login": { "const": "sunnykgupta" },
+        "authority": { "const": "O1" }
+      }
+    },
+    "observed_at": { "const": "2026-08-08T11:47:45Z" },
+    "session_decisions": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "decision"],
+          "properties": {
+            "id": { "const": 41 },
+            "decision": { "const": "Accept the strongest platform-available G0 evidence despite no signed payload API." }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "decision"],
+          "properties": {
+            "id": { "const": 42 },
+            "decision": { "const": "Approve candidate cb18b84533757f9644dd10eb1aa87fc26b438f25 and authorize squash merge." }
+          }
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "platform_evidence_limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signed_payload_available", "accepted_available_evidence", "statement"],
+      "properties": {
+        "signed_payload_available": { "const": false },
+        "accepted_available_evidence": { "const": true },
+        "statement": { "type": "string", "minLength": 80 }
+      }
+    },
+    "source_delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pull_request", "branch", "baseline_commit", "approval_only_commit", "approval_record_blob", "approval_record_sha256", "candidate_commit", "candidate_tree"],
+      "properties": {
+        "pull_request": { "const": "https://github.com/sunnykgupta/AutoRepo.ai/pull/1" },
+        "branch": { "const": "vorflux/g1-governed-repository-final-v2" },
+        "baseline_commit": { "const": "d2a79e2af07894a3766e453113d48999905b32a7" },
+        "approval_only_commit": { "const": "2ebd1734bb67200cf24300ff4c9ea1acbb035a5a" },
+        "approval_record_blob": { "const": "8843a6f608c253b2d291b62840010ef5c5425b60" },
+        "approval_record_sha256": { "const": "355a73dd4ae2a8eb73d68b6e03da59b7ea22dba49ea2579cd1267a5b45f2ad36" },
+        "candidate_commit": { "const": "cb18b84533757f9644dd10eb1aa87fc26b438f25" },
+        "candidate_tree": { "const": "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499" }
+      }
+    },
+    "merged_delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "commit", "tree", "merged_at"],
+      "properties": {
+        "method": { "const": "squash" },
+        "commit": { "const": "4b7bc15ce70516af7b720082f47f78a49c5f19d7" },
+        "tree": { "const": "e5bc0dccec759b1febb8fc84c0b6efdffeeb8499" },
+        "merged_at": { "const": "2026-08-08T11:48:38Z" }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 40 }
+    }
+  }
+}

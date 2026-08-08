@@ -11,6 +11,7 @@ import {
   validateCleanRoom,
   validateG0History,
   validateG0Metadata,
+  validateSquashAmendment,
   validateSettingsEvidence,
   validateWorkflowDocument,
   validateWorkflows,
@@ -43,6 +44,45 @@ test('parses G0 with a real YAML parser and verifies immutable metadata and hist
   const metadataErrors = [];
   validateG0Metadata(wrongKind, contracts, metadataErrors);
   assert.match(metadataErrors.join('\n'), /artifact identities/);
+});
+
+test('rejects every material squash-amendment identity mutation', () => {
+  const expected = contracts.g0.squash_amendment;
+  const amendmentPath = join(root, expected.path);
+  const original = readFileSync(amendmentPath, 'utf8');
+  const mutations = [
+    ['wrong merge SHA', expected.squash_merge_commit, '0'.repeat(40)],
+    ['wrong squash tree', expected.squash_tree, '1'.repeat(40)],
+    ['wrong candidate commit', expected.candidate_commit, '2'.repeat(40)],
+    ['wrong candidate tree', expected.candidate_tree, '3'.repeat(40)],
+    ['wrong decision ID', '  - id: 41', '  - id: 99'],
+    ['wrong amendment status', 'status: "APPROVED"', 'status: "REJECTED"'],
+    ['wrong source baseline parent', expected.source_baseline_commit, '4'.repeat(40)],
+  ];
+  for (const [label, before, after] of mutations) {
+    const raw = Buffer.from(original.replace(before, after));
+    assert.notEqual(raw.toString(), original, `${label} fixture must alter the amendment`);
+    const errors = [];
+    const amendment = parseYaml(raw.toString('utf8'), errors, label);
+    validateSquashAmendment(root, amendment, raw, expected, errors);
+    assert.ok(errors.length > 0, `${label} must be rejected`);
+  }
+});
+
+test('rejects unknown squash-amendment fields and approval-record mutations', () => {
+  const expected = contracts.g0.squash_amendment;
+  const original = readFileSync(join(root, expected.path), 'utf8');
+  for (const [label, raw] of [
+    ['unknown field', Buffer.from(`${original}unexpected: true\n`)],
+    ['approval blob', Buffer.from(original.replace(expected.approval_record_blob, '5'.repeat(40)))],
+    ['approval digest', Buffer.from(original.replace(expected.approval_record_sha256, '6'.repeat(64)))],
+    ['approver identity', Buffer.from(original.replace('github_login: "sunnykgupta"', 'github_login: "someone-else"'))],
+  ]) {
+    const errors = [];
+    const amendment = parseYaml(raw.toString('utf8'), errors, label);
+    validateSquashAmendment(root, amendment, raw, expected, errors);
+    assert.ok(errors.length > 0, `${label} must be rejected`);
+  }
 });
 
 test('rejects duplicate YAML keys instead of silently accepting an overridden owner', () => {
