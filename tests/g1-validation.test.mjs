@@ -161,6 +161,26 @@ test('accepts current trusted security-event write jobs while keeping PR jobs re
   assert.deepEqual(errors, []);
 });
 
+test('allows deployment writes only for explicit trusted main triggers', () => {
+  const trustedPages = `on:\n  push:\n    branches: [main]\npermissions: { contents: read, pages: write, id-token: write }\njobs: {}\n`;
+  const untrustedPages = `on: [pull_request, push]\npermissions: { contents: read, pages: write, id-token: write }\njobs: {}\n`;
+  assert.deepEqual(validateWorkflowDocument(trustedPages, 'trusted-pages'), []);
+  assert.match(validateWorkflowDocument(untrustedPages, 'untrusted-pages').join('\n'), /pages permission must not exceed read/);
+});
+
+test('rejects workflow writes from untrusted triggers and unguarded manual refs', () => {
+  const writes = 'permissions: { contents: read, pages: write, id-token: write }\njobs: {}\n';
+  const unrestrictedPush = `on: push\n${writes}`;
+  const issueComment = `on: issue_comment\n${writes}`;
+  const issues = `on: issues\n${writes}`;
+  const unguardedManual = `on: workflow_dispatch\n${writes}`;
+  const guardedManual = `on: workflow_dispatch\npermissions: { contents: read }\njobs:\n  deploy:\n    if: github.ref == 'refs/heads/main'\n    permissions: { contents: read, pages: write, id-token: write }\n`;
+  for (const [label, workflow] of Object.entries({ unrestrictedPush, issueComment, issues, unguardedManual })) {
+    assert.match(validateWorkflowDocument(workflow, label).join('\n'), /pages permission must not exceed read/);
+  }
+  assert.deepEqual(validateWorkflowDocument(guardedManual, 'guarded-manual'), []);
+});
+
 test('requires per-setting matched or deferred evidence instead of a fabricated global match', () => {
   const setup = temporaryRoot();
   try {

@@ -1,0 +1,70 @@
+name: deploy-pages
+
+on:
+  push:
+    branches: [main]
+
+# Deployment is limited to trusted main revisions. GitHub Pages requires pages
+# and OIDC write scopes only for the build artifact and deployment jobs.
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Check out the trusted revision without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up the required Node.js version
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.19.0
+      - name: Set the required npm version
+        run: npm install --global npm@11.19.0
+      - name: Install locked dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts
+      - name: Validate the trusted revision in metadata mode
+        run: CI=1 npm run validate
+      - name: Verify GitHub workflow and Pages policy
+        run: node .github/scripts/validate-github-baseline.mjs
+      - name: Scan the public repository boundary
+        run: node .github/scripts/scan-clean-room.mjs
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - name: Build the static learning site
+        env:
+          PUBLIC_BASE_PATH: /AutoRepo.ai/
+        run: npm run site:build
+      - name: Upload the static artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: site/dist
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@d6dbb6f1b497c5c8bfb79cda1c04f90ec69e5f1a # v4

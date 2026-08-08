@@ -59,11 +59,6 @@ function hasWritePermission(permissions) {
     Object.values(permissions).some((value) => value === 'write');
 }
 
-function trustedOnlyWritePermissions(document) {
-  return Object.values(document.jobs ?? {}).every((job) => !Object.hasOwn(job, 'permissions') ||
-    !hasWritePermission(job.permissions) || !jobCanRunOnPullRequest(job));
-}
-
 export function findUnpinnedActionLines(text) {
   const document = parseWorkflowYaml(text);
   return actionReferences(document).filter((action) => !SHA_PIN.test(action) || !sourceHasVersionComment(text, action));
@@ -80,11 +75,8 @@ export function findPullRequestSafetyViolations(text) {
   return violations;
 }
 
-function sharedWorkflowErrors(text, label, document) {
+function sharedWorkflowErrors(text, label) {
   return validateWorkflowDocument(text, label).filter((error) => {
-    // Root G1 validation correctly forbids write tokens in baseline workflows. The
-    // trusted-only CodeQL/Scorecard uploads are intentionally outside pull_request.
-    if (document && trustedOnlyWritePermissions(document) && /permission must not exceed read$/.test(error)) return false;
     // The root policy validator currently validates owner/repository action syntax;
     // this wrapper additionally accepts action subpaths (such as CodeQL init) and
     // requires their source-line version comments.
@@ -130,14 +122,14 @@ export async function validateBaseline(repoRoot = process.cwd()) {
     if (!name.endsWith('.yml') && !name.endsWith('.yaml')) continue;
     const workflow = await readFile(resolve(workflowDirectory, name), 'utf8');
     try {
-      const document = parseWorkflowYaml(workflow);
+      parseWorkflowYaml(workflow);
       for (const action of findUnpinnedActionLines(workflow)) {
         errors.push(`${name}: action is not SHA-pinned with a version comment: ${action}`);
       }
       for (const violation of findPullRequestSafetyViolations(workflow)) {
         errors.push(`${name}: pull_request workflow ${violation}.`);
       }
-      errors.push(...sharedWorkflowErrors(workflow, `.github/workflows/${name}`, document));
+      errors.push(...sharedWorkflowErrors(workflow, `.github/workflows/${name}`));
     } catch (error) {
       errors.push(`${name}: ${error.message}`);
     }

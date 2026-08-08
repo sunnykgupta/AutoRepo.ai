@@ -1,0 +1,257 @@
+---
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const base = import.meta.env.BASE_URL;
+const assetBase = base.endsWith('/') ? base : `${base}/`;
+const repositoryUrl = 'https://github.com/sunnykgupta/AutoRepo.ai';
+
+const loop = [
+  ['01', 'Understand', 'Turn an outcome into a clear problem, constraints, and success signals.'],
+  ['02', 'Plan', 'Choose the smallest safe path and name the decisions that need a person.'],
+  ['03', 'Build', 'Make one bounded change at a time with the relevant context nearby.'],
+  ['04', 'Verify', 'Run checks that demonstrate the change works, not just that it looks done.'],
+  ['05', 'Review', 'Inspect the result, trade-offs, and evidence before accepting the next step.'],
+  ['06', 'Learn', 'Record what changed the plan so the repository gets easier to operate.'],
+  ['07', 'Continue', 'Promote the next clear piece of work while goals and limits still apply.'],
+];
+
+const startingPoints = [
+  ['Frame the outcome', 'Name the change', 'Write the user value, constraints, and the signal that says the work helped.'],
+  ['Build the feedback loop', 'Make proof easy', 'Choose small changes and checks that show what happened without relying on memory.'],
+  ['Maintain the rhythm', 'Keep the next step clear', 'Record decisions and intervention points so useful work can continue.'],
+];
+
+const templateCards = [
+  { id: 'goal', type: 'GOAL', title: 'Goal template', file: 'GOAL.md', copyLabel: 'Copy goal template' },
+  { id: 'work', type: 'WORK', title: 'Work template', file: 'WORK.md', copyLabel: 'Copy work template' },
+  { id: 'decision', type: 'DECISION', title: 'Decision template', file: 'DECISION.md', copyLabel: 'Copy decision template' },
+  { id: 'agent', type: 'INSTRUCTIONS', title: 'Agent instructions', file: 'AGENTS.md', copyLabel: 'Copy instructions' },
+].map((card) => ({
+  ...card,
+  content: readFileSync(fileURLToPath(new URL(`../../../templates/${card.file}`, import.meta.url)), 'utf8').trimEnd(),
+}));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A lightweight guide to building repositories that keep moving with clear goals, useful evidence, and human judgment where it matters." />
+    <link rel="icon" href={`${assetBase}favicon.svg`} type="image/svg+xml" />
+    <title>AutoRepo.ai — Make repositories that keep moving</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="status-bar" role="status">
+      <div class="container">
+        <span>EARLY LEARNING GUIDE · BUILT IN THE OPEN</span>
+        <a href={`${repositoryUrl}/blob/main/LICENSE`}>MIT LICENSE <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <nav class="container nav" aria-label="Primary navigation">
+        <a class="brand" href={base} aria-label="AutoRepo.ai home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>AutoRepo.ai <small>LEARN</small></span>
+        </a>
+        <div class="nav-links">
+          <a href="#loop">The loop</a>
+          <a href="#quickstart">Quickstart</a>
+          <a href="#pathways">Starting points</a>
+          <a href="#boundaries">Boundaries</a>
+        </div>
+        <a class="github-link" href={repositoryUrl}>VIEW ON GITHUB <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">A practical learning guide</p>
+            <h1>Make repositories that keep moving.</h1>
+            <p class="lede">AutoRepo.ai helps teams turn clear goals into a self-sustaining practice: work is understood, planned, built, checked, reviewed, and improved without needing a person to push every small step.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#quickstart">Start the quickstart <span aria-hidden="true">→</span></a>
+              <a class="button secondary" href="#loop">See the loop <span aria-hidden="true">↓</span></a>
+            </div>
+            <ul class="hero-notes" aria-label="Key principles">
+              <li><span></span> Goals are explicit</li>
+              <li><span></span> Changes carry evidence</li>
+              <li><span></span> Humans keep judgment</li>
+            </ul>
+          </div>
+          <aside class="loop-card" aria-label="The autonomous repository loop">
+            <header><span>THE AUTONOMOUS LOOP</span><b>7 STEPS</b></header>
+            <ol>
+              {loop.map(([number, title]) => <li><span>{number}</span><strong>{title}</strong><i aria-hidden="true">→</i></li>)}
+            </ol>
+            <footer>Clear goals create useful momentum.</footer>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section intro" aria-labelledby="what-heading">
+        <div class="container split-heading">
+          <div>
+            <p class="eyebrow">The simple version</p>
+            <h2 id="what-heading">Autonomy is a practice, not a switch.</h2>
+          </div>
+          <div class="intro-copy">
+            <p>A self-sustaining repository does not mean unsupervised software. It means the next useful action is easy to identify, safely bounded, and backed by feedback.</p>
+            <p>Start with a written goal. Keep work small. Let tests and review inform the next move. Reserve irreversible or high-impact choices for people.</p>
+          </div>
+        </div>
+        <div class="container principle-grid">
+          <article><span>01</span><h3>Make intent durable</h3><p>Put goals, constraints, and success signals where contributors and agents can find them.</p></article>
+          <article><span>02</span><h3>Make progress inspectable</h3><p>Use focused work, checks, and decisions to show what happened and why.</p></article>
+          <article><span>03</span><h3>Make intervention normal</h3><p>Define the moments to pause, ask, redirect, or stop before they become emergencies.</p></article>
+        </div>
+      </section>
+
+      <section class="section loop-section" id="loop" aria-labelledby="loop-heading">
+        <div class="container section-heading">
+          <div><p class="eyebrow">The operating rhythm</p><h2 id="loop-heading">One loop. Seven useful moves.</h2></div>
+          <p>Each step leaves the repository in a better position to take the next one. Skip steps only when their answer is already clear and recorded.</p>
+        </div>
+        <div class="container loop-grid">
+          {loop.map(([number, title, description], index) => (
+            <article class:list={['loop-step', { featured: index === 0 }]}>
+              <span class="step-number">{number}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+              {index < loop.length - 1 && <span class="next" aria-hidden="true">→</span>}
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section quickstart" id="quickstart" aria-labelledby="quickstart-heading">
+        <div class="container section-heading">
+          <div><p class="eyebrow">A 45-minute quickstart</p><h2 id="quickstart-heading">Give your repository a starting rhythm.</h2></div>
+          <p>You do not need an elaborate control system to begin. Pick one active goal and create the four files below in a place your team already uses.</p>
+        </div>
+        <div class="container quickstart-grid">
+          <ol class="quickstart-list">
+            <li><span>01</span><div><h3>Name one outcome</h3><p>Write the user-facing result, how you will recognize it, and what is out of scope.</p></div></li>
+            <li><span>02</span><div><h3>Break it into safe work</h3><p>Make tasks small enough to verify and explicit about when someone must decide.</p></div></li>
+            <li><span>03</span><div><h3>Set the proof</h3><p>Choose the tests, review questions, or observations that make a task genuinely complete.</p></div></li>
+            <li><span>04</span><div><h3>Run the next loop</h3><p>After review, record what changed and promote the next clear piece of work.</p></div></li>
+          </ol>
+          <aside class="quickstart-note">
+            <p class="card-label">GOOD FIRST GOAL</p>
+            <blockquote>“Make it possible for a new contributor to run the project checks and understand the result in under ten minutes.”</blockquote>
+            <p>It is concrete, bounded, and creates feedback for the next improvement.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section templates" aria-labelledby="templates-heading">
+        <div class="container section-heading">
+          <div><p class="eyebrow">Copyable repository templates</p><h2 id="templates-heading">Start with four plain-text files.</h2></div>
+          <p>These templates are intentionally small. Copy them from this page or open the versioned files in the repository and adapt them to your project.</p>
+        </div>
+        <div class="container template-grid">
+          {templateCards.map((template) => (
+            <article class="template-card">
+              <header><div><span class="template-type">{template.type}</span><h3>{template.title}</h3></div><a href={`${repositoryUrl}/blob/main/templates/${template.file}`}>Open file <span aria-hidden="true">↗</span></a></header>
+              <pre id={`${template.id}-template`}><code>{template.content}</code></pre>
+              <button class="copy-button" type="button" data-copy-target={`${template.id}-template`}>{template.copyLabel}</button>
+            </article>
+          ))}
+        </div>
+        <p class="copy-status" id="copy-status" aria-live="polite"></p>
+      </section>
+
+      <section class="section pathways" id="pathways" aria-labelledby="pathways-heading">
+        <div class="container section-heading">
+          <div><p class="eyebrow">Starting points</p><h2 id="pathways-heading">Three prompts for the work in front of you.</h2></div>
+          <p>Choose the prompt that helps you clarify the next useful move. They are not a role curriculum or a prescribed sequence.</p>
+        </div>
+        <div class="container pathway-grid">
+          {startingPoints.map(([title, prompt, description], index) => (
+            <article class:list={['pathway', { dark: index === 1 }]}>
+              <span>START HERE</span>
+              <h3>{title}</h3>
+              <strong>{prompt}</strong>
+              <p>{description}</p>
+              <a href="#quickstart">Start here <span aria-hidden="true">→</span></a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section boundaries" id="boundaries" aria-labelledby="boundaries-heading">
+        <div class="container boundaries-grid">
+          <div>
+            <p class="eyebrow">Safety and intervention</p>
+            <h2 id="boundaries-heading">A useful system knows when to stop.</h2>
+            <p class="body-copy">Automation can propose, prepare, build, and verify within clear limits. Routine, reversible preview or staging deployments may continue when repository policy explicitly permits them; high-impact decisions stay with people.</p>
+          </div>
+          <div class="boundary-cards">
+            <article><span class="yes">CONTINUE</span><h3>When the work is clear</h3><p>Scope is bounded, checks are available, and the result is reversible or easy to review. Routine preview or staging deployments may continue when policy permits them.</p></article>
+            <article><span class="ask">ASK</span><h3>When judgment is needed</h3><p>Ask for human approval when requirements conflict, a material trade-off is unclear, or a dependency makes the plan uncertain.</p></article>
+            <article><span class="stop">STOP</span><h3>Before high-impact action</h3><p>Production or public releases, destructive actions, access or credential changes, spending, and legal or security posture changes require explicit human approval.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="status-section" aria-labelledby="status-heading">
+        <div class="container status-grid">
+          <div><p class="eyebrow">Honest project status</p><h2 id="status-heading">A learning site, not a live autonomous service.</h2></div>
+          <div><p>This is a static GitHub Pages guide. It has no accounts, runtime agents, background jobs, telemetry, or hosted control plane. The examples describe a practice you can adopt in your own repository.</p><a class="text-link" href={repositoryUrl}>Inspect the source and current project records <span aria-hidden="true">→</span></a></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div><a class="brand footer-brand" href={base}><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>AutoRepo.ai</span></a><p>Lightweight guidance for repositories that can keep making useful progress.</p></div>
+        <div><h2>Explore</h2><a href="#loop">The loop</a><a href="#quickstart">Quickstart</a><a href="#pathways">Starting points</a></div>
+        <div><h2>Project</h2><a href={`${repositoryUrl}/blob/main/README.md`}>Repository</a><a href={`${repositoryUrl}/blob/main/SECURITY.md`}>Security</a><a href={`${repositoryUrl}/blob/main/LICENSE`}>MIT License</a></div>
+      </div>
+      <div class="container footer-bottom"><span>© 2026 AutoRepo.ai</span><span>STATIC LEARNING GUIDE · NO CUSTOM DOMAIN CONFIGURED</span></div>
+    </footer>
+
+    <script>
+      const status = document.querySelector('#copy-status');
+      document.querySelectorAll<HTMLButtonElement>('[data-copy-target]').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const target = document.querySelector(`#${button.dataset.copyTarget}`);
+          if (!target) return;
+          try {
+            await navigator.clipboard.writeText(target.textContent ?? '');
+            button.textContent = 'Copied';
+            status.textContent = 'Template copied to your clipboard.';
+            window.setTimeout(() => { button.textContent = button.dataset.copyTarget === 'agent-template' ? 'Copy instructions' : `Copy ${button.dataset.copyTarget.replace('-template', '')} template`; }, 1800);
+          } catch {
+            status.textContent = 'Copy is unavailable in this browser. Select the template text and copy it manually.';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  :root { --paper:#f7f7f2; --surface:#fff; --subtle:#e9ece4; --ink:#0b1220; --muted:#566171; --line:#d4d9cf; --navy:#0e2038; --navy-2:#142c49; --teal:#0f766e; --teal-pale:#dff6f1; --amber:#a84f09; --amber-pale:#fff3d6; --red:#a3342a; --radius:8px; --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace; }
+  * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.55 var(--sans); } a { color:inherit; text-decoration:none; } a:focus-visible, button:focus-visible { outline:3px solid #f59e0b; outline-offset:3px; } .container { width:min(1160px, calc(100% - 48px)); margin:0 auto; }
+  .skip-link { position:absolute; z-index:20; top:8px; left:-999px; padding:10px 14px; color:var(--ink); background:#fff; border:2px solid var(--ink); }.skip-link:focus { left:12px; }
+  .status-bar { color:#dbe7f5; background:var(--navy); font:700 11px/1 var(--mono); letter-spacing:.05em; }.status-bar .container { min-height:34px; display:flex; justify-content:space-between; align-items:center; gap:16px; }.status-bar .container > span { white-space:nowrap; }.status-bar a { color:#fff; }
+  .site-header { position:sticky; top:0; z-index:10; background:rgba(247,247,242,.96); border-bottom:1px solid var(--line); backdrop-filter:blur(10px); }.nav { min-height:70px; display:flex; align-items:center; justify-content:space-between; gap:24px; }.brand { display:inline-flex; align-items:center; gap:10px; font-size:20px; font-weight:800; letter-spacing:-.035em; white-space:nowrap; }.brand small { color:var(--teal); margin-left:3px; font:800 10px var(--mono); letter-spacing:.08em; }.brand-mark { display:grid; grid-template:repeat(2,1fr)/repeat(2,1fr); gap:3px; width:27px; height:27px; transform:rotate(45deg); }.brand-mark i { background:var(--ink); }.brand-mark i:nth-child(2) { background:var(--teal); }.brand-mark i:nth-child(3) { background:transparent; border:2px solid var(--ink); }.nav-links { display:flex; align-items:center; gap:26px; font-size:14px; font-weight:700; }.nav-links a:hover, .footer a:hover { color:var(--teal); }.github-link { padding:9px 12px; border:1px solid var(--ink); border-radius:6px; font:700 11px var(--mono); letter-spacing:.02em; }
+  .hero { overflow:hidden; padding:80px 0 74px; border-bottom:1px solid var(--line); background-image:linear-gradient(var(--line) 1px, transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); background-size:56px 56px; }.hero-grid { display:grid; grid-template-columns:minmax(0,1.07fr) minmax(380px,.93fr); gap:70px; align-items:center; }.eyebrow { display:flex; align-items:center; gap:9px; margin:0 0 15px; color:var(--teal); font:800 11px/1.2 var(--mono); letter-spacing:.08em; text-transform:uppercase; }.eyebrow::before { width:25px; height:2px; background:currentColor; content:""; }.hero h1, h2, h3 { letter-spacing:-.045em; }.hero h1 { max-width:700px; margin:0; font-size:clamp(43px,5.3vw,68px); line-height:1.02; }.lede { max-width:670px; margin:24px 0 0; color:#3e4958; font-size:19px; line-height:1.66; }.hero-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }.button { min-height:46px; padding:0 18px; display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--ink); border-radius:6px; font-size:14px; font-weight:800; }.button.primary { color:#fff; border-color:var(--teal); background:var(--teal); box-shadow:0 8px 18px rgb(15 118 110 / 20%); }.button.secondary { background:var(--paper); }.hero-notes { display:flex; flex-wrap:wrap; gap:13px 20px; padding:0; margin:26px 0 0; list-style:none; color:var(--muted); font:700 11px var(--mono); }.hero-notes li { display:flex; align-items:center; gap:7px; }.hero-notes span { width:7px; height:7px; border-radius:50%; background:var(--teal); }
+  .loop-card { overflow:hidden; color:#edf7ff; border:1px solid #36516f; border-radius:var(--radius); background:var(--navy); box-shadow:0 16px 42px rgb(11 18 32 / 16%); }.loop-card header, .loop-card footer { min-height:49px; padding:0 17px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #314861; background:#102641; font:800 11px var(--mono); letter-spacing:.04em; }.loop-card header b { padding:4px 6px; color:#94e3d6; border:1px solid #397c72; border-radius:4px; font-size:9px; }.loop-card ol { padding:7px 20px; margin:0; list-style:none; }.loop-card li { display:grid; grid-template-columns:35px 1fr auto; gap:9px; align-items:center; min-height:47px; border-bottom:1px solid #2d4661; }.loop-card li:last-child { border:0; }.loop-card li span { color:#57d9c7; font:700 11px var(--mono); }.loop-card li strong { font-size:14px; }.loop-card li i { color:#8bcfc6; font-style:normal; }.loop-card footer { justify-content:center; color:#aebed0; border-top:1px solid #314861; border-bottom:0; background:#0b1b30; font-size:10px; }
+  .section { padding:80px 0; }.split-heading, .section-heading { display:grid; grid-template-columns:1fr minmax(270px,470px); gap:56px; align-items:end; padding-bottom:24px; border-bottom:1px solid var(--ink); }.split-heading h2, .section-heading h2, .boundaries h2, .status-section h2 { margin:0; font-size:clamp(31px,4vw,45px); line-height:1.1; }.intro-copy p, .section-heading > p { margin:0; color:var(--muted); }.intro-copy p + p { margin-top:11px; }.principle-grid { display:grid; grid-template-columns:repeat(3,1fr); margin-top:28px; border-top:1px solid var(--line); border-left:1px solid var(--line); }.principle-grid article { min-height:214px; padding:25px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--surface); }.principle-grid span, .loop-step .step-number { color:var(--teal); font:800 11px var(--mono); }.principle-grid h3 { margin:42px 0 8px; font-size:19px; }.principle-grid p { margin:0; color:var(--muted); font-size:14px; }
+  .loop-section { background:var(--subtle); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }.loop-grid { display:grid; grid-template-columns:repeat(4,1fr); margin-top:28px; border-top:1px solid #c8d0c5; border-left:1px solid #c8d0c5; }.loop-step { position:relative; min-height:226px; padding:23px; border-right:1px solid #c8d0c5; border-bottom:1px solid #c8d0c5; background:rgb(255 255 255 / 38%); }.loop-step.featured { background:#f5fcfa; box-shadow:inset 0 4px var(--teal); }.loop-step h3 { margin:36px 0 8px; font-size:20px; }.loop-step p { margin:0; color:var(--muted); font-size:13px; }.loop-step .next { position:absolute; right:-9px; top:104px; z-index:2; display:grid; width:18px; height:18px; place-items:center; color:var(--teal); background:var(--paper); border-radius:50%; font-size:13px; font-weight:900; }
+  .quickstart-grid { display:grid; grid-template-columns:1.25fr .75fr; gap:30px; margin-top:28px; }.quickstart-list { padding:0; margin:0; list-style:none; border-top:1px solid var(--line); }.quickstart-list li { display:grid; grid-template-columns:42px 1fr; gap:17px; padding:20px 0; border-bottom:1px solid var(--line); }.quickstart-list span { display:grid; width:32px; height:32px; place-items:center; color:var(--teal); border:1px solid #abd9d1; border-radius:50%; font:800 11px var(--mono); }.quickstart-list h3 { margin:0 0 4px; font-size:18px; }.quickstart-list p { margin:0; color:var(--muted); font-size:14px; }.quickstart-note { align-self:start; padding:25px; color:#f4f8fb; background:var(--navy); border:1px solid #294862; border-radius:var(--radius); }.card-label { margin:0; color:#75d9cc; font:800 10px var(--mono); letter-spacing:.08em; }.quickstart-note blockquote { margin:25px 0; font-size:21px; font-weight:750; line-height:1.36; letter-spacing:-.025em; }.quickstart-note > p:last-child { margin:0; color:#b9c7d4; font-size:13px; }
+  .templates { background:#f0f1eb; border-top:1px solid var(--line); }.template-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:28px; }.template-card { overflow:hidden; display:flex; flex-direction:column; min-width:0; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); }.template-card header { min-height:66px; padding:13px 16px; display:flex; align-items:center; justify-content:space-between; gap:14px; border-bottom:1px solid var(--line); }.template-type { color:var(--amber); font:800 9px var(--mono); letter-spacing:.08em; }.template-card h3 { margin:2px 0 0; font-size:16px; }.template-card header a { color:var(--teal); font-size:12px; font-weight:750; white-space:nowrap; }.template-card pre { min-height:242px; max-height:242px; padding:16px; margin:0; overflow:auto; color:#dce7f0; background:#10243d; font:11px/1.58 var(--mono); }.copy-button { min-height:43px; border:0; border-top:1px solid var(--line); color:var(--ink); background:#fff; font:800 12px var(--sans); cursor:pointer; }.copy-button:hover { color:#fff; background:var(--teal); }.copy-status { min-height:1.5em; margin:13px auto 0; color:var(--teal); text-align:center; font-size:13px; }
+  .pathway-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:28px; }.pathway { min-height:294px; padding:24px; display:flex; flex-direction:column; border:1px solid var(--line); border-radius:var(--radius); background:#fff; }.pathway > span { color:var(--amber); font:800 10px var(--mono); letter-spacing:.07em; }.pathway h3 { margin:45px 0 8px; font-size:23px; }.pathway strong { color:var(--teal); font-size:14px; }.pathway p { margin:10px 0 20px; color:var(--muted); font-size:14px; }.pathway a { margin-top:auto; color:var(--teal); font-size:13px; font-weight:800; }.pathway.dark { color:#fff; border-color:var(--navy); background:var(--navy); }.pathway.dark > span, .pathway.dark strong, .pathway.dark a { color:#80e2d4; }.pathway.dark p { color:#bfccd9; }
+  .boundaries { background:var(--navy); color:#fff; }.boundaries-grid { display:grid; grid-template-columns:.9fr 1.1fr; gap:72px; align-items:start; }.boundaries .eyebrow { color:#6ee1d1; }.body-copy { max-width:520px; margin:18px 0 0; color:#bdcad8; }.boundary-cards { border-top:1px solid #415974; }.boundary-cards article { display:grid; grid-template-columns:84px 1fr; column-gap:16px; padding:18px 0; border-bottom:1px solid #415974; }.boundary-cards span { align-self:start; padding:4px 5px; text-align:center; border-radius:4px; font:800 9px var(--mono); letter-spacing:.04em; }.yes { color:#98ece0; background:#165e59; }.ask { color:#ffdc9b; background:#77500b; }.stop { color:#ffc3bc; background:#7d2f2b; }.boundary-cards h3 { margin:0; font-size:16px; }.boundary-cards p { grid-column:2; margin:4px 0 0; color:#b8c6d4; font-size:13px; }
+  .status-section { padding:63px 0; background:var(--amber-pale); border-top:1px solid #efd5a0; border-bottom:1px solid #efd5a0; }.status-grid { display:grid; grid-template-columns:1fr minmax(280px,500px); gap:60px; align-items:center; }.status-section .eyebrow { color:var(--amber); }.status-grid p { margin:0; color:#604a29; }.text-link { display:inline-block; margin-top:17px; color:#7c3e09; font-size:14px; font-weight:800; }
+  .footer { padding:46px 0 28px; color:#c2d0de; background:var(--navy); }.footer-grid { display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:48px; }.footer-brand { color:#fff; }.footer-brand .brand-mark i { background:#fff; }.footer-brand .brand-mark i:nth-child(2) { background:#65dccd; }.footer-brand .brand-mark i:nth-child(3) { border-color:#fff; background:transparent; }.footer p { max-width:360px; color:#91a4b8; font-size:13px; }.footer h2 { margin:4px 0 13px; color:#fff; font:800 10px var(--mono); letter-spacing:.08em; text-transform:uppercase; }.footer-grid > div:not(:first-child) a { display:block; margin:8px 0; font-size:13px; }.footer-bottom { display:flex; justify-content:space-between; gap:16px; padding-top:27px; margin-top:33px; color:#8294a7; border-top:1px solid #2d4661; font:10px var(--mono); letter-spacing:.03em; }
+  @media (max-width:900px) { .nav-links { display:none; }.hero-grid, .quickstart-grid, .boundaries-grid, .status-grid { grid-template-columns:1fr; }.hero-grid { gap:42px; }.loop-card { max-width:620px; }.split-heading, .section-heading { grid-template-columns:1fr; gap:16px; }.loop-grid { grid-template-columns:repeat(2,1fr); }.loop-step .next { display:none; }.footer-grid { grid-template-columns:1.4fr 1fr 1fr; }.boundaries-grid { gap:40px; } }
+  @media (max-width:620px) { .container { width:min(100% - 30px, 1160px); }.status-bar .container > a, .github-link { display:none; }.nav { min-height:62px; }.hero { padding:54px 0; }.hero h1 { font-size:43px; }.lede { font-size:17px; }.hero-notes { display:grid; gap:8px; }.section { padding:57px 0; }.principle-grid, .loop-grid, .template-grid, .pathway-grid { grid-template-columns:1fr; }.principle-grid article { min-height:auto; }.principle-grid h3 { margin-top:25px; }.loop-step { min-height:172px; }.loop-step h3 { margin-top:24px; }.template-card pre { min-height:220px; max-height:220px; }.boundary-cards article { grid-template-columns:74px 1fr; }.footer-grid { grid-template-columns:1fr 1fr; gap:28px; }.footer-grid > div:first-child { grid-column:1 / -1; }.footer-bottom { flex-direction:column; }.status-section { padding:50px 0; } }
+</style>
