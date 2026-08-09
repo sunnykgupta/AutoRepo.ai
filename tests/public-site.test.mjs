@@ -29,7 +29,12 @@ test('builds a project-site-ready learning experience without a live-domain cano
     assert.match(html, new RegExp(`>${step}<`));
   }
   assert.match(html, /href="\/AutoRepo\.ai"/);
-  assert.match(html, /A learning site, not a live autonomous service/);
+  assert.match(html, /OPEN-SOURCE GUIDE FOR SELF-SUSTAINING REPOSITORIES/);
+  assert.match(html, /OPEN SOURCE · MIT LICENSE/);
+  assert.doesNotMatch(html, /custom domain/i);
+  assert.doesNotMatch(html, /project status/i);
+  assert.doesNotMatch(html, /not a live/i);
+  assert.doesNotMatch(html, /no accounts|hosted control plane/i);
   assert.match(html, /href="\/AutoRepo\.ai\/favicon\.svg"/);
   assert.ok(existsSync(join(root, 'site', 'dist', 'favicon.svg')), 'Astro must emit the project favicon.');
   assert.doesNotMatch(html, /rel="canonical"/);
