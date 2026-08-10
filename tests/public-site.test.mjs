@@ -15,30 +15,31 @@ function buildSite() {
   const result = spawnSync('npm', ['run', 'site:build'], {
     cwd: root,
     encoding: 'utf8',
-    env: { ...process.env, PUBLIC_BASE_PATH: '/AutoRepo.ai/' },
+    env: { ...process.env, PUBLIC_BASE_PATH: '/' },
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
   assert.ok(existsSync(siteOutput), 'Astro must emit the static index page.');
   return readFileSync(siteOutput, 'utf8');
 }
 
-test('builds a project-site-ready learning experience without a live-domain canonical link', () => {
+test('builds a root-path learning experience for the custom domain', () => {
   const html = buildSite();
   assert.match(html, /Make repositories that keep moving/);
   for (const step of ['Understand', 'Plan', 'Build', 'Verify', 'Review', 'Learn', 'Continue']) {
     assert.match(html, new RegExp(`>${step}<`));
   }
-  assert.match(html, /href="\/AutoRepo\.ai"/);
+  assert.match(html, /href="\/"/);
   assert.match(html, /OPEN-SOURCE GUIDE FOR SELF-SUSTAINING REPOSITORIES/);
   assert.match(html, /OPEN SOURCE · MIT LICENSE/);
   assert.doesNotMatch(html, /custom domain/i);
   assert.doesNotMatch(html, /project status/i);
   assert.doesNotMatch(html, /not a live/i);
   assert.doesNotMatch(html, /no accounts|hosted control plane/i);
-  assert.match(html, /href="\/AutoRepo\.ai\/favicon\.svg"/);
+  assert.match(html, /href="\/favicon\.svg"/);
+  assert.doesNotMatch(html, /(?:href|src)="\/AutoRepo\.ai\//);
+  assert.equal(readFileSync(join(root, 'site/public/CNAME'), 'utf8'), 'autorepo.ai\n');
   assert.ok(existsSync(join(root, 'site', 'dist', 'favicon.svg')), 'Astro must emit the project favicon.');
-  assert.doesNotMatch(html, /rel="canonical"/);
-  assert.doesNotMatch(html, /https:\/\/autorepo\.ai/);
+  assert.match(readFileSync(join(root, 'site/astro.config.mjs'), 'utf8'), /site: 'https:\/\/autorepo\.ai'/);
 });
 
 test('ships copyable template controls and versioned source templates', () => {
@@ -67,8 +68,7 @@ test('keeps the public guide, templates, and first-loop example aligned on auton
   const agentInstructions = readFileSync(join(root, 'templates', 'AGENTS.md'), 'utf8');
   const html = buildSite();
 
-  assert.match(readme, /https:\/\/sunnykgupta\.github\.io\/AutoRepo\.ai\//);
-  assert.match(readme, /After this change is merged and the GitHub Pages workflow deploys/i);
+  assert.match(readme, /https:\/\/autorepo\.ai\//);
   assert.match(readme, approvalBoundary);
   assert.match(readme, humanApprovalBoundary);
   assert.match(agentInstructions, approvalBoundary);
@@ -106,6 +106,6 @@ test('uses a trusted-only GitHub Pages deployment workflow with a static artifac
   assert.match(workflow, /CI=1 npm run validate/);
   assert.match(workflow, /node \.github\/scripts\/validate-github-baseline\.mjs/);
   assert.match(workflow, /node \.github\/scripts\/scan-clean-room\.mjs/);
-  assert.match(workflow, /PUBLIC_BASE_PATH: \/AutoRepo\.ai\//);
+  assert.match(workflow, /PUBLIC_BASE_PATH: \//);
   assert.match(workflow, /path: site\/dist/);
 });

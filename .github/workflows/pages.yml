@@ -46,7 +46,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Build the static learning site
         env:
-          PUBLIC_BASE_PATH: /AutoRepo.ai/
+          PUBLIC_BASE_PATH: /
         run: npm run site:build
       - name: Upload the static artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3

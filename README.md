@@ -33,11 +33,9 @@ Need a concrete reference? [`examples/first-loop/`](examples/first-loop/) shows 
 
 The learning guide is a static Astro site. It has no accounts, runtime agents, background jobs, telemetry, or hosted control plane.
 
-After this change is merged and the GitHub Pages workflow deploys, the site will be available at:
+The public learning guide is available at:
 
-<https://sunnykgupta.github.io/AutoRepo.ai/>
-
-Until then, that URL may not serve this version of the guide.
+<https://autorepo.ai/>
 
 ### Run the site locally
 
@@ -46,10 +44,10 @@ npm ci
 npm run site:dev
 ```
 
-Build the Pages artifact locally with its project-site path:
+Build the custom-domain Pages artifact locally:
 
 ```sh
-PUBLIC_BASE_PATH=/AutoRepo.ai/ npm run site:build
+PUBLIC_BASE_PATH=/ npm run site:build
 ```
 
 Check Astro types and diagnostics:
